@@ -21,7 +21,7 @@ function App() {
 
     try {
       // 2. Send to Python Backend
-      const response = await axios.post('http://127.0.0.1:8000/ask', {
+      const response = await axios.post('https://nysc-bot-api.onrender.com/ask', {
         question: question
       })
 
