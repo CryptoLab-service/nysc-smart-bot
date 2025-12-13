@@ -1,4 +1,4 @@
-# 🇳🇬 NYSC Smart Assistant (AI-Powered)
+# NYSC Smart Assistant Bot
 
 ![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=white)
