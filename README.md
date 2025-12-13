@@ -118,8 +118,8 @@ Built with ❤️ by Oluwalowo Toluwalope John.
 Toluwalope John Oluwalowo is a Designer, AI-Software Developer, Automation Specialist, a techie and a serving Corps Member (2025 Batch A1) currently serving in the FCT. I built this tool to help Prospective Corps Member (PCMs) and felow Corpers navigate the service year with ease, removing the confusion of unverified information.
 
 ## ☕ Support the Project
-If this bot saved you stress or you love the innovation, consider buying me a coffee to keep the servers running and integrated into various social media platfoms!
-![Email](https://img.shields.io/badge/Email-oluwalowojohn@gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)
+If this bot saved you stress or you love the innovation, consider buying me a coffee to keep the servers running and integrated into various social media platfoms!   
+![Email](https://img.shields.io/badge/Email-oluwalowojohn@gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)   
 ![WhatsApp](https://img.shields.io/badge/WhatsApp-2347030739128-green?style=for-the-badge&logo=whatsapp&logoColor=white)
 
 
