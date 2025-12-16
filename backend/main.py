@@ -1,10 +1,12 @@
 import os
-from fastapi import FastAPI, HTTPException
+import requests
+import datetime
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-# 1. Imports
+# Imports for AI
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -14,7 +16,7 @@ load_dotenv()
 
 app = FastAPI()
 
-# 2. CORS (So React can talk to Python)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,75 +25,87 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. Setup Tools
-# -- The Database (Long-term memory)
+# --- SETUP TOOLS ---
 DB_PATH = "chroma_db"
 embedding_function = OpenAIEmbeddings()
 vector_db = Chroma(persist_directory=DB_PATH, embedding_function=embedding_function)
-
-# -- The Web Searcher (Real-time eyes)
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+llm = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo") # Lower temperature for more factual answers
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
-# -- The Brain
-llm = ChatOpenAI(temperature=0.3, model="gpt-3.5-turbo")
+# --- CORE AI LOGIC FUNCTION ---
+def get_nysc_answer(question: str):
+    try:
+        # 0. Get Today's Date (Crucial for "Current Batch" questions)
+        today = datetime.date.today().strftime("%B %d, %Y")
+
+        # 1. Search Internal Database (Prioritize your "standard_procedures.txt")
+        db_results = vector_db.similarity_search(question, k=3)
+        internal_knowledge = "\n".join([doc.page_content for doc in db_results])
+        
+        # 2. Search Web (Refined Query)
+        # We add "Official" to filter out random Facebook comments
+        print(f"Searching web for: NYSC Nigeria official news {question}")
+        web_response = tavily.search(
+            query=f"NYSC Nigeria official news {question}", 
+            search_depth="basic", 
+            max_results=2,
+            include_domains=["nysc.gov.ng", "nyscselfservice.com.ng", "legit.ng" , "punchng.com", "vanguardngr.com", "dailypost.ng", "thecable.ng"] 
+            # (Optional: You can restrict to trusted news sites if Tavily allows, or just use general better queries)
+        )
+        web_context = "\n".join([result["content"] for result in web_response["results"]])
+        
+        # 3. Construct System Prompt
+        system_prompt = f"""
+        You are a Senior NYSC Consultant. Your job is to give accurate, professional guidance to Corps Members.
+        
+        CURRENT DATE: {today}
+        
+        INSTRUCTIONS:
+        1. DIRECT ANSWER: Start with the answer immediately. NEVER say "According to the latest news" or "Based on the web search".
+        2. HIERARCHY: Trust the 'INTERNAL KNOWLEDGE' section above all else. Only use 'WEB NEWS' for dates not found in your internal knowledge.
+        3. TONE: Professional, authoritative, and helpful. Do not mention "cars will be provided" unless explicitly stated in the text.
+        4. PROCEDURES: If asked about documentation or travel, give the specific steps listed in 'INTERNAL KNOWLEDGE'.
+
+        <INTERNAL_KNOWLEDGE>
+        {internal_knowledge}
+        </INTERNAL_KNOWLEDGE>
+
+        <WEB_NEWS>
+        {web_context}
+        </WEB_NEWS>
+        """
+        
+        messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
+        response = llm.invoke(messages)
+        return response.content
+    except Exception as e:
+        print(f"Error: {e}")
+        return "I am currently upgrading my database to serve you better. Please ask again in a moment."
+
+# --- API ENDPOINTS ---
 
 class QueryRequest(BaseModel):
     question: str
 
 @app.post("/ask")
 async def ask_question(request: QueryRequest):
-    try:
-        print(f"Thinking about: {request.question}")
-        
-        # SOURCE A: Search the PDF Database (The Rules)
-        db_results = vector_db.similarity_search(request.question, k=2)
-        pdf_context = "\n".join([doc.page_content for doc in db_results])
-        
-        # SOURCE B: Search the Internet (The News)
-        # We search specifically for NYSC related info
-        print("Searching the web...")
-        web_response = tavily.search(query=f"NYSC Nigeria {request.question}", search_depth="basic", max_results=2)
-        web_context = "\n".join([result["content"] for result in web_response["results"]])
-        
-        # Combine Contexts
-        full_context = f"""
-        --- INFO FROM NYSC BYE-LAWS (RULES) ---
-        {pdf_context}
-        
-        --- INFO FROM LATEST WEB SEARCH (NEWS) ---
-        {web_context}
-        """
-        
-        # Construct the Prompt
-        system_prompt = f"""
-        You are a smart NYSC Assistant. You have access to the Bye-Law Rules and the latest News from the web.
-        
-        Your Goal: Answer the user's question accurately.
-        - If the question is about RULES (penalties, dress code), prioritize the 'NYSC BYE-LAWS' section.
-        - If the question is about DATES or NEWS (camp dates, senate list), prioritize the 'WEB SEARCH' section.
-        - Always cite your source context (e.g., "According to the latest news..." or "The Bye-Laws state...").
-        
-        <context>
-        {full_context}
-        </context>
-        """
-        
-        # Send to AI
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=request.question)
-        ]
-        
-        response = llm.invoke(messages)
-        
-        return {
-            "answer": response.content,
-        }
+    answer = get_nysc_answer(request.question)
+    return {"answer": answer}
 
-    except Exception as e:
-        print(f"Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+@app.post("/telegram")
+async def telegram_webhook(request: Request):
+    data = await request.json()
+    if "message" in data:
+        chat_id = data["message"]["chat"]["id"]
+        user_text = data["message"].get("text", "")
+        if user_text:
+            ai_reply = get_nysc_answer(user_text)
+            url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+            payload = {"chat_id": chat_id, "text": ai_reply}
+            requests.post(url, json=payload)
+    return {"status": "ok"}
 
 @app.get("/")
 def home():
-    return {"message": "NYSC AI (Hybrid Mode) is Ready!"}
+    return {"message": "NYSC AI is Live (Fine-Tuned)!"}

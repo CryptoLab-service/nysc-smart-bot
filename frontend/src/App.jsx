@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { 
-  Send, Menu, Plus, User, 
-  MessageSquare, Settings, HelpCircle, 
-  Sparkles, ChevronRight, History 
+import {
+  Send, Menu, Plus, User,
+  MessageSquare, Settings, HelpCircle,
+  Sparkles, ChevronRight, History
 } from 'lucide-react'
 import './App.css'
 
@@ -35,7 +35,7 @@ function App() {
       const response = await axios.post('https://nysc-bot-api.onrender.com/ask', {
         question: input
       })
-      
+
       // 3. Add Bot Response
       setMessages(prev => [...prev, { type: 'bot', text: response.data.answer }])
     } catch (error) {
@@ -55,7 +55,7 @@ function App() {
 
   return (
     <div className="flex h-screen bg-[#131314] text-gray-200 font-sans overflow-hidden">
-      
+
       {/* --- SIDEBAR (Gemini Style) --- */}
       <div className={`${isSidebarOpen ? 'w-64' : 'w-0'} bg-[#1e1f20] transition-all duration-300 ease-in-out flex flex-col border-r border-gray-800 md:relative absolute z-20 h-full`}>
         <div className="p-4 flex items-center justify-between">
@@ -67,8 +67,8 @@ function App() {
 
         {/* New Chat Button */}
         <div className="px-4 mb-4">
-          <button 
-            onClick={() => setMessages([])} 
+          <button
+            onClick={() => setMessages([])}
             className="flex items-center gap-3 bg-[#1a1a1c] hover:bg-[#28292a] text-gray-300 py-3 px-4 rounded-full text-sm w-full transition-colors border border-gray-700">
             <Plus size={18} />
             <span className="whitespace-nowrap">New chat</span>
@@ -96,7 +96,7 @@ function App() {
 
       {/* --- MAIN CHAT AREA --- */}
       <div className="flex-1 flex flex-col relative">
-        
+
         {/* Top Bar (Mobile Menu) */}
         <div className="p-4 flex justify-between items-center text-gray-400 md:hidden">
           <Menu onClick={() => setIsSidebarOpen(true)} />
@@ -107,7 +107,7 @@ function App() {
         {/* CHAT CONTENT */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide">
           <div className="max-w-3xl mx-auto flex flex-col gap-6 pb-32">
-            
+
             {/* WELCOME SCREEN (If no messages) */}
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center mt-20 text-center animate-fade-in">
@@ -122,8 +122,8 @@ function App() {
                 {/* Suggestion Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
                   {suggestions.map((s, i) => (
-                    <button 
-                      key={i} 
+                    <button
+                      key={i}
                       onClick={() => handleAsk(s.text)}
                       className="bg-[#1e1f20] hover:bg-[#2a2b2d] p-4 rounded-xl text-left border border-gray-800 hover:border-gray-600 transition-all group"
                     >
@@ -139,7 +139,7 @@ function App() {
               /* MESSAGE STREAM */
               messages.map((msg, i) => (
                 <div key={i} className={`flex gap-4 ${msg.type === 'user' ? 'justify-end' : ''}`}>
-                  
+
                   {/* Bot Icon */}
                   {msg.type === 'bot' && (
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-700 flex items-center justify-center shrink-0 mt-1">
@@ -148,11 +148,10 @@ function App() {
                   )}
 
                   {/* Message Bubble */}
-                  <div className={`max-w-[85%] md:max-w-[75%] leading-relaxed ${
-                    msg.type === 'user' 
-                      ? 'bg-[#2a2b2d] text-white rounded-2xl rounded-tr-sm px-5 py-3' 
+                  <div className={`max-w-[85%] md:max-w-[75%] leading-relaxed ${msg.type === 'user'
+                      ? 'bg-[#2a2b2d] text-white rounded-2xl rounded-tr-sm px-5 py-3'
                       : 'text-gray-200 px-2 py-1'
-                  }`}>
+                    }`}>
                     {msg.text}
                   </div>
 
@@ -169,14 +168,14 @@ function App() {
             {/* Loading Indicator */}
             {isLoading && (
               <div className="flex gap-4">
-                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-700 flex items-center justify-center shrink-0 animate-pulse">
-                    <Sparkles size={16} className="text-white" />
-                 </div>
-                 <div className="flex items-center gap-1">
-                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
-                 </div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-emerald-700 flex items-center justify-center shrink-0 animate-pulse">
+                  <Sparkles size={16} className="text-white" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -194,7 +193,7 @@ function App() {
               placeholder="Ask about NYSC..."
               className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-gray-500 outline-none"
             />
-            <button 
+            <button
               onClick={() => handleAsk()}
               disabled={isLoading || !question.trim()}
               className="p-3 bg-white text-black rounded-full hover:bg-gray-200 disabled:opacity-50 disabled:hover:bg-white transition-colors ml-2"
