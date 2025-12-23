@@ -6,7 +6,7 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-RAG-green?style=for-the-badge)
 
-> **The NYSC Smart Assistant is a powerful, all‑in‑one digital companion for Graduates, Prospective Corps Members (PCMs), serving Corps Members (CMs), parents, and anyone seeking trusted information about the NYSC scheme. It is a Hybrid AI Agent that integrates official NYSC Bye‑Laws, publications, policies, historical data, and real‑time verified updates to deliver accurate, instant, and reliable answers.**
+> **The NYSC-Bot is a powerful, all‑in‑one digital companion for Graduates, Prospective Corps Members (PCMs), serving Corps Members (CMs), parents, and anyone seeking trusted information about the NYSC scheme. It is a Hybrid AI Agent that integrates official NYSC Bye‑Laws, publications, policies, historical data, and real‑time verified updates to deliver accurate, instant, and reliable answers.**
 >
 > **Built to eliminate misinformation, the NYSC Bot provides clear guidance across every stage of the NYSC journey — from pre‑mobilization and deployment to camp rules, posting, relocation, and service‑year operations. Continuously updated with the latest announcements and guidelines, it ensures users always receive current, authoritative, and dependable information about the scheme.**
 

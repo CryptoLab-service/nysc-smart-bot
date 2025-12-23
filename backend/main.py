@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 # Imports for AI
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
 from langchain_core.messages import SystemMessage, HumanMessage
 from tavily import TavilyClient
@@ -26,11 +27,64 @@ app.add_middleware(
 )
 
 # --- SETUP TOOLS ---
+from database import engine, Base
+import models
+from routers import auth, data
+from fastapi.staticfiles import StaticFiles
+
+# Create Database Tables
+models.Base.metadata.create_all(bind=engine)
+
+# Mount Static Files (for PDF resources)
+os.makedirs("static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Include Routers
+app.include_router(auth.router)
+app.include_router(data.router)
+
 DB_PATH = "chroma_db"
-embedding_function = OpenAIEmbeddings()
-vector_db = Chroma(persist_directory=DB_PATH, embedding_function=embedding_function)
-tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
-llm = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo") # Lower temperature for more factual answers
+embedding_function = None
+vector_db = None
+llm = None
+
+try:
+    llm_openai = None
+    llm_gemini = None
+    
+    # Initialize OpenAI
+    if os.getenv("OPENAI_API_KEY") and not os.getenv("OPENAI_API_KEY").startswith("sk-placeholder"):
+        print("Initializing OpenAI...")
+        embedding_function = OpenAIEmbeddings()
+        vector_db = Chroma(persist_directory=DB_PATH, embedding_function=embedding_function)
+        llm_openai = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo")
+    
+    # Initialize Gemini
+    if os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"):
+        print("Initializing Gemini...")
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        # Note: If reusing ChromaDB embedded with OpenAI, switching LLMs is fine, but embeddings must match DB.
+        llm_gemini = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=gemini_key, temperature=0.2)
+        
+    # Set default LLM (Prioritize OpenAI if both exist, or use whichever is available)
+    if llm_openai:
+        llm = llm_openai
+        print("Using OpenAI as primary LLM.")
+    elif llm_gemini:
+        llm = llm_gemini
+        print("Using Gemini as primary LLM.")
+    else:
+        print("WARNING: No valid API Key found (OpenAI or Gemini). AI features disabled.")
+except Exception as e:
+    print(f"WARNING: Failed to initialize AI components: {e}")
+
+tavily = None
+try:
+    if os.getenv("TAVILY_API_KEY"):
+        tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+except Exception:
+    pass
+
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 # --- CORE AI LOGIC FUNCTION ---
@@ -40,20 +94,27 @@ def get_nysc_answer(question: str):
         today = datetime.date.today().strftime("%B %d, %Y")
 
         # 1. Search Internal Database (Prioritize your "standard_procedures.txt")
-        db_results = vector_db.similarity_search(question, k=3)
-        internal_knowledge = "\n".join([doc.page_content for doc in db_results])
+        internal_knowledge = ""
+        if vector_db:
+            db_results = vector_db.similarity_search(question, k=3)
+            internal_knowledge = "\n".join([doc.page_content for doc in db_results])
         
         # 2. Search Web (Refined Query)
         # We add "Official" to filter out random Facebook comments
-        print(f"Searching web for: NYSC Nigeria official news {question}")
-        web_response = tavily.search(
-            query=f"NYSC Nigeria official news {question}", 
-            search_depth="basic", 
-            max_results=2,
-            include_domains=["nysc.gov.ng", "nyscselfservice.com.ng", "legit.ng" , "punchng.com", "vanguardngr.com", "dailypost.ng", "thecable.ng"] 
-            # (Optional: You can restrict to trusted news sites if Tavily allows, or just use general better queries)
-        )
-        web_context = "\n".join([result["content"] for result in web_response["results"]])
+        web_context = ""
+        if tavily:
+            print(f"Searching web for: NYSC Nigeria official news {question}")
+            try:
+                web_response = tavily.search(
+                    query=f"NYSC Nigeria official news {question}", 
+                    search_depth="basic", 
+                    max_results=2,
+                    include_domains=["nysc.gov.ng", "nyscselfservice.com.ng", "legit.ng" , "punchng.com", "vanguardngr.com", "dailypost.ng", "thecable.ng"] 
+                    # (Optional: You can restrict to trusted news sites if Tavily allows, or just use general better queries)
+                )
+                web_context = "\n".join([result["content"] for result in web_response["results"]])
+            except Exception as e:
+                print(f"Tavily Search Error: {e}")
         
         # 3. Construct System Prompt
         system_prompt = f"""
@@ -76,9 +137,12 @@ def get_nysc_answer(question: str):
         </WEB_NEWS>
         """
         
-        messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
-        response = llm.invoke(messages)
-        return response.content
+        if llm:
+            messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
+            response = llm.invoke(messages)
+            return response.content
+        else:
+            return "I am currently in Maintenance Mode (AI features disabled). Please check back later or contact support."
     except Exception as e:
         print(f"Error: {e}")
         return "I am currently upgrading my database to serve you better. Please ask again in a moment."
@@ -109,3 +173,12 @@ async def telegram_webhook(request: Request):
 @app.get("/")
 def home():
     return {"message": "NYSC AI is Live (Fine-Tuned)!"}
+
+@app.on_event("startup")
+async def startup_event():
+    print("\n" + "="*50)
+    print(" NYSC SMART BOT BACKEND IS RUNNING")
+    print("="*50)
+    print(" API Documentation: http://localhost:8000/docs")
+    print(" Frontend API URL:  http://localhost:8000")
+    print("="*50 + "\n")
