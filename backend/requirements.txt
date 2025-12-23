@@ -10,4 +10,7 @@ python-jose[cryptography]
 python-multipart
 langchain-google-genai
 pypdf
+fastapi
+uvicorn
+
 
