@@ -19,12 +19,16 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    // Fallback if Env Var is missing (Common Vercel issue)
+    const API_URL = import.meta.env.VITE_API_BASE_URL || "https://nysc-bot-api.onrender.com"
+
     const checkAuth = async () => {
         const token = localStorage.getItem('nysc_token')
         if (token) {
             setAuthHeader(token)
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/auth/me`)
+                // Use API_URL constant
+                const res = await axios.get(`${API_URL}/auth/me`)
                 setUser(res.data)
             } catch (error) {
                 console.error("Auth Validation Failed", error)
@@ -40,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, { email, password }, { timeout: 5000 })
+            const res = await axios.post(`${API_URL}/auth/login`, { email, password }, { timeout: 15000 })
             const { token, ...userData } = res.data
             localStorage.setItem('nysc_token', token)
             setAuthHeader(token)
@@ -56,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (userData) => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, userData, { timeout: 5000 })
+            const res = await axios.post(`${API_URL}/auth/signup`, userData, { timeout: 15000 })
             const { token, ...user } = res.data
             localStorage.setItem('nysc_token', token)
             setAuthHeader(token)
@@ -92,9 +96,9 @@ export const AuthProvider = ({ children }) => {
                 photo_url: `https://ui-avatars.com/api/?name=${provider}+User`
             }
 
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/social-login`, mockProviderData)
+            const res = await axios.post(`${API_URL}/auth/social-login`, mockProviderData)
             const { token, ...userData } = res.data
-            
+
             localStorage.setItem('nysc_token', token)
             setAuthHeader(token)
             setUser(userData)

@@ -14,7 +14,8 @@ if exist "backend\nysc_bot.db" (
 
 echo.
 echo [2/3] Starting Backend (New Terminal)...
-start cmd /k "cd backend && call venv\Scripts\activate && uvicorn main:app --reload --port 8000"
+start cmd /k "cd backend && call ..\venv\Scripts\activate && uvicorn main:app --reload --port 8000"
+
 
 echo.
 echo [3/3] Starting Frontend (New Terminal)...
