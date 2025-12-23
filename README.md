@@ -1,145 +1,119 @@
-# NYSC Smart Assistant Bot
+# NYSC Smart Companion AI 🇳🇬
 
-![Status](https://img.shields.io/badge/Status-Live-success?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=white)
-![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-RAG-green?style=for-the-badge)
+![NYSC AI](https://img.shields.io/badge/Status-Live-green) ![License](https://img.shields.io/badge/License-MIT-blue)
 
-> **The NYSC-Bot is a powerful, all‑in‑one digital companion for Graduates, Prospective Corps Members (PCMs), serving Corps Members (CMs), parents, and anyone seeking trusted information about the NYSC scheme. It is a Hybrid AI Agent that integrates official NYSC Bye‑Laws, publications, policies, historical data, and real‑time verified updates to deliver accurate, instant, and reliable answers.**
->
-> **Built to eliminate misinformation, the NYSC Bot provides clear guidance across every stage of the NYSC journey — from pre‑mobilization and deployment to camp rules, posting, relocation, and service‑year operations. Continuously updated with the latest announcements and guidelines, it ensures users always receive current, authoritative, and dependable information about the scheme.**
+A next-generation **AI-powered assistant** designed to guide Prospective and Serving Corps Members through their Service Year. This project combines a **FastAPI** backend with a modern **React (Vite)** frontend to deliver real-time answers, personalized timelines, and resource management.
 
 ---
 
 ## 🚀 Live Demo
-**Backend API:** [https://nysc-bot-api.onrender.com/docs](https://nysc-bot-api.onrender.com/docs)  
-**Frontend App:** *(Link coming soon)*
-
----
-
-## 🧠 How It Works (The Architecture)
-
-This system goes far beyond a regular chatbot — it is a fully engineered **Retrieval‑Augmented Generation (RAG)** platform designed to connect complex NYSC policies with the everyday questions of Prospective Corps Members (PCMs), Corps Members (CMs), parents, and the general public.
-
-### 1. The Knowledge Base (The Library) 📚
-At its core is a rich, structured knowledge repository built from officially recognized NYSC materials. The bot has indexed and understands:
-* **NYSC Bye‑Laws (Revised 2011)**
-* **Official Publications, Handbooks & Circulars**
-* **Service Year Policies & Historical Engagement Records**
-* **Standard Operating Procedures (SOPs) and Administrative Guidelines**
-
-This ensures every response is grounded in verified, authoritative information.
-
-### 2. The Eyes (Real‑Time Information Layer) 🌐
-NYSC processes evolve constantly — static data isn’t enough.  
-The system integrates a **real‑time search layer** that fetches up‑to‑date information such as:
-* Camp registration timelines
-* Senate list updates
-* Mobilization news
-* Official announcements and policy changes
-
-This keeps the bot aligned with the latest developments across the NYSC ecosystem.
-
-### 3. The Brain (Generative AI Engine) 🤖
-Using a powerful **Generative AI model**, the bot blends:
-* Verified knowledge from the internal library  
-* Fresh updates from the live web  
-
-It then synthesizes both into **clear, accurate, context‑aware answers** tailored to the user’s question.
+- **Frontend (Vercel)**: [https://nysc-smart-bot.vercel.app](https://nysc-smart-bot.vercel.app)
+- **Backend API (Render)**: [https://nysc-bot-api.onrender.com](https://nysc-bot-api.onrender.com)
+- **Telegram Bot**: *(Run locally or verify via Webhook)*
 
 ---
 
 ## ✨ Key Features
 
-✅ **Comprehensive Knowledge:** Provides accurate answers on everything from Camp Rules and Code of Conduct to CDS, LGA postings, and POP procedures.  
-✅ **Hybrid Intelligence:** Combines officially indexed NYSC documents (PDFs, Bye‑Laws, SOPs) with real‑time verified updates from the web.  
-✅ **Context‑Aware Responses:** Automatically cites its information sources (e.g., *“According to the 2011 Bye‑Laws…”* or *“Based on the latest NYSC update…”*).  
-✅ **High Performance:** Powered by FastAPI for ultra‑fast, low‑latency responses.  
-✅ **Modern UI:** Clean, mobile‑friendly React interface optimized for accessibility and smooth user experience.  
-✅ **Always Up‑to‑Date:** Continuously refreshes its knowledge base to prevent misinformation and ensure accuracy.  
+### 🤖 Intelligent AI Chat
+- **RAG System (Retrieval Augmentation Generation)**: built with LangChain & ChromaDB.
+- **Context-Aware**: Knows the current date and NYSC specific procedures.
+- **Hybrid Search**: Combines internal official guidelines with live web search (Tavily HTTP) for recent news.
+
+### 🔐 Robust Authentication
+- **Secure Signup/Login**: JWT-based authentication with Bcrypt hashing.
+- **Social Auth Integration**: Login seamlessly with Google, Facebook, or GitHub.
+- **Role-Based Access**: Specialized views for PCMs, Corps Members, and Officials.
+- **Persistent Sessions**: Auto-login functionality via local storage tokens.
+
+### 📅 Dynamic Timeline & Dashboard
+- **Smart Timeline**: Automatically calculates Mobilization, Camp, and P.O.P dates based on user inputs.
+- **ResourceHub**: Download official PDFs (Bye-Laws, SAED Handbook) directly from the dashboard.
+- **Responsive UI**: Beautiful dark/light mode capable interface built with TailwindCSS.
+
+### 📱 Telegram Integration
+- **Cross-Platform**: Chat with the same AI intelligence via Telegram.
+- **Webhook Support**: Fully integrated webhook setup for real-time responses.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component | Technology | Description |
-| :--- | :--- | :--- |
-| **Backend** | Python & FastAPI | High‑performance API powering the bot’s core logic. |
-| **AI Orchestration** | LangChain | Coordinates the RAG pipeline, tools, and reasoning steps. |
-| **Vector Database** | ChromaDB | Stores embeddings for semantic search and document retrieval. |
-| **Search Layer** | Tavily API | Fetches real‑time NYSC news, updates, and announcements. |
-| **Frontend** | React + Vite | Fast, responsive, and mobile‑optimized chat interface. |
-| **Hosting** | Render (API) & Vercel (UI) | Reliable cloud infrastructure for global availability. |
+### Backend
+- **Framework**: FastAPI (Python)
+- **Database**: SQLite (SQLAlchemy ORM)
+- **AI/ML**: LangChain, OpenAI/Gemini API, ChromaDB (Vector Store)
+- **Tools**: Uvicorn, Python-Dotenv
+
+### Frontend
+- **Framework**: React 19 (Vite)
+- **Styling**: TailwindCSS 4, Lucide Icons
+- **State/Auth**: Context API, Axios, React Hot Toast
 
 ---
 
-## ⚡ Quick Start (Run Locally)
+## ⚙️ Local Setup Guide
 
 ### Prerequisites
-* Python 3.10+
-* Node.js 16+
+- Node.js & npm
+- Python 3.10+
+- Git
 
-### 1. Clone the Repo
+### 1. Clone & Install
 ```bash
-git clone [https://github.com/CryptoLab-service/nysc-smart-bot.git](https://github.com/CryptoLab-service/nysc-smart-bot.git)
-cd nysc-smart-bot
+git clone https://github.com/your-username/nysc-bot.git
+cd nysc-bot
 ```
 
-### 2. Setup Backend
-```bash
-cd backend
-python -m venv venv
-# Activate venv (Windows: venv\Scripts\activate | Mac: source venv/bin/activate)
-pip install -r requirements.txt
-
-# Create .env file with your keys:
-# OPENAI_API_KEY=sk-...
-# TAVILY_API_KEY=tvly-...
-
-# Ingest Data
-python ingest.py
-
-# Run Server
-uvicorn main:app --reload
+### 2. Environment Variables
+Create a `.env` file in `backend/` and add your keys:
+```env
+OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=...
+TAVILY_API_KEY=tvly-...
+TELEGRAM_TOKEN=123456:ABC...
+SECRET_KEY=your_secret_key
 ```
 
-### 3. Setup Frontend
-```bash
-cd ../frontend
-npm install
-npm run dev
-```
+### 3. Run Locally (The Easy Way)
+We have included a startup script for Windows:
+- Double-click `start_app.bat`
+
+**Or manually:**
+- **Backend**: `cd backend && uvicorn main:app --reload --port 8000`
+- **Frontend**: `cd frontend && npm run dev`
 
 ---
 
-## 📄 About the creator
-Built with ❤️ by Oluwalowo Toluwalope John.
-Toluwalope John Oluwalowo is a Designer, AI-Software Developer, Automation Specialist, a techie and a serving Corps Member (2025 Batch A1) currently serving in the FCT. I built this tool to help Prospective Corps Member (PCMs) and felow Corpers navigate the service year with ease, removing the confusion of unverified information.
+## ☁️ Deployment Guide
 
-## ☕ Support the Project
-If this bot saved you stress or you love the innovation, consider buying me a coffee to keep the servers running and integrated into various social media platfoms!   
-![Email](https://img.shields.io/badge/Email-oluwalowojohn@gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)  ![WhatsApp](https://img.shields.io/badge/WhatsApp-2347030739128-green?style=for-the-badge&logo=whatsapp&logoColor=white)
+### Backend (Render)
+1. Push code to GitHub.
+2. Create a new **Web Service** on Render connected to your repo.
+3. **Build Command**: `pip install -r backend/requirements.txt`
+4. **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port 10000`
+5. **Environment Variables**: Add all keys from your local `.env` to Render Dashboard.
 
+### Frontend (Vercel)
+1. Import your GitHub repo to Vercel.
+2. **Framework Preset**: Vite
+3. **Root Directory**: `frontend`
+4. **Environment Variables**:
+   - `VITE_API_BASE_URL`: `https://nysc-bot-api.onrender.com`
+
+### Telegram Webhook
+To connect your Telegram Bot to the live Render Backend:
+1. Ensure your Render backend is deployed.
+2. Locally, run the helper script:
+   ```bash
+   python backend/set_webhook.py
+   ```
+3. Enter your Render URL when prompted (e.g., `https://nysc-bot-api.onrender.com`).
 
 ---
 
 ## 🤝 Contributing
-Contributions are welcome!
-
-Fork the Project
-
-Create your Feature Branch (```git checkout -b feature/AmazingFeature```)
-
-Commit your Changes (```git commit -m 'Add some AmazingFeature'```)
-
-Push to the Branch (```git push origin feature/AmazingFeature```)
-
-Open a Pull Request
+Contributions are welcome! Please fork the repository and submit a pull request.
 
 ## 📄 License
-Distributed under the MIT License. See LICENSE for more information.
-
----
-
-Built with ❤️ for Nigerian Corpers.
+This project is licensed under the MIT License.
