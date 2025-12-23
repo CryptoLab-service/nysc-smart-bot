@@ -27,6 +27,7 @@ app.add_middleware(
 )
 
 # --- SETUP TOOLS ---
+<<<<<<< Updated upstream
 from database import engine, Base
 import models
 from routers import auth, data
@@ -87,6 +88,15 @@ except Exception:
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
+=======
+DB_PATH = "chroma_db"
+embedding_function = OpenAIEmbeddings()
+vector_db = Chroma(persist_directory=DB_PATH, embedding_function=embedding_function)
+tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+llm = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo") # Lower temperature for more factual answers
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+>>>>>>> Stashed changes
 # --- CORE AI LOGIC FUNCTION ---
 def get_nysc_answer(question: str):
     try:
@@ -94,6 +104,7 @@ def get_nysc_answer(question: str):
         today = datetime.date.today().strftime("%B %d, %Y")
 
         # 1. Search Internal Database (Prioritize your "standard_procedures.txt")
+<<<<<<< Updated upstream
         internal_knowledge = ""
         if vector_db:
             db_results = vector_db.similarity_search(question, k=3)
@@ -115,6 +126,22 @@ def get_nysc_answer(question: str):
                 web_context = "\n".join([result["content"] for result in web_response["results"]])
             except Exception as e:
                 print(f"Tavily Search Error: {e}")
+=======
+        db_results = vector_db.similarity_search(question, k=3)
+        internal_knowledge = "\n".join([doc.page_content for doc in db_results])
+        
+        # 2. Search Web (Refined Query)
+        # We add "Official" to filter out random Facebook comments
+        print(f"Searching web for: NYSC Nigeria official news {question}")
+        web_response = tavily.search(
+            query=f"NYSC Nigeria official news {question}", 
+            search_depth="basic", 
+            max_results=2,
+            include_domains=["nysc.gov.ng", "nyscselfservice.com.ng", "legit.ng" , "punchng.com", "vanguardngr.com", "dailypost.ng", "thecable.ng"] 
+            # (Optional: You can restrict to trusted news sites if Tavily allows, or just use general better queries)
+        )
+        web_context = "\n".join([result["content"] for result in web_response["results"]])
+>>>>>>> Stashed changes
         
         # 3. Construct System Prompt
         system_prompt = f"""
@@ -137,12 +164,18 @@ def get_nysc_answer(question: str):
         </WEB_NEWS>
         """
         
+<<<<<<< Updated upstream
         if llm:
             messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
             response = llm.invoke(messages)
             return response.content
         else:
             return "I am currently in Maintenance Mode (AI features disabled). Please check back later or contact support."
+=======
+        messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
+        response = llm.invoke(messages)
+        return response.content
+>>>>>>> Stashed changes
     except Exception as e:
         print(f"Error: {e}")
         return "I am currently upgrading my database to serve you better. Please ask again in a moment."
@@ -173,6 +206,7 @@ async def telegram_webhook(request: Request):
 @app.get("/")
 def home():
     return {"message": "NYSC AI is Live (Fine-Tuned)!"}
+<<<<<<< Updated upstream
 
 @app.on_event("startup")
 async def startup_event():
@@ -182,3 +216,5 @@ async def startup_event():
     print(" API Documentation: http://localhost:8000/docs")
     print(" Frontend API URL:  http://localhost:8000")
     print("="*50 + "\n")
+=======
+>>>>>>> Stashed changes
