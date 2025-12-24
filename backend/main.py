@@ -27,7 +27,7 @@ app.add_middleware(
 )
 
 # --- SETUP TOOLS ---
-from database import engine, Base
+from database import engine, Base, SessionLocal
 import models
 from routers import auth, data, admin
 from fastapi.staticfiles import StaticFiles
