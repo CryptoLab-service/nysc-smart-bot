@@ -29,7 +29,7 @@ app.add_middleware(
 # --- SETUP TOOLS ---
 from database import engine, Base
 import models
-from routers import auth, data, admin, chat
+from routers import auth, data, admin
 from fastapi.staticfiles import StaticFiles
 from auth import get_password_hash
 
@@ -63,7 +63,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include Routers
 app.include_router(auth.router)
-app.include_router(chat.router)
 app.include_router(data.router)
 app.include_router(admin.router)
 
