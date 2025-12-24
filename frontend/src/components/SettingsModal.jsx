@@ -28,6 +28,7 @@ const SettingsModal = ({ isOpen, onClose, user }) => {
                 role: user.role || 'Corps Member',
                 state: user.state || '',
                 cds_group: user.cds_group || '',
+                cds_day: user.cds_day || '',
                 lga: user.lga || '',
                 address: user.address || '',
                 state_residence: user.state_residence || '',
@@ -42,7 +43,8 @@ const SettingsModal = ({ isOpen, onClose, user }) => {
         const { name, value } = e.target
         // If state changes, reset PPA LGA
         if (name === 'state') {
-            setFormData(prev => ({ ...prev, state: value, lga: '' }))
+            // Keep state change simple, user manually types LGA now
+            setFormData(prev => ({ ...prev, state: value }))
         }
         // If residential state changes, reset residential LGA
         else if (name === 'state_residence') {
@@ -81,7 +83,6 @@ const SettingsModal = ({ isOpen, onClose, user }) => {
     if (!isOpen) return null
 
     const states = Object.keys(nigeriaData).sort();
-    const ppaLgas = formData.state ? nigeriaData[formData.state]?.sort() || [] : [];
     const resLgas = formData.state_residence ? nigeriaData[formData.state_residence]?.sort() || [] : [];
 
     const isCorpsMember = formData.role === 'Corps Member';
@@ -196,31 +197,47 @@ const SettingsModal = ({ isOpen, onClose, user }) => {
                                             {states.map(s => <option key={s} value={s}>{s}</option>)}
                                         </select>
                                     </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PPA LGA (Result)</label>
+                                            <input
+                                                type="text"
+                                                name="lga"
+                                                value={formData.lga}
+                                                onChange={handleChange}
+                                                placeholder="Enter LGA"
+                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CDS Group</label>
+                                            <input
+                                                type="text"
+                                                name="cds_group"
+                                                value={formData.cds_group}
+                                                onChange={handleChange}
+                                                className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                                            />
+                                        </div>
+                                    </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">LGA of PPA</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CDS Day</label>
                                         <select
-                                            name="lga"
-                                            value={formData.lga}
+                                            name="cds_day"
+                                            value={formData.cds_day}
                                             onChange={handleChange}
-                                            disabled={!formData.state}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white disabled:opacity-50"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white"
                                         >
-                                            <option value="">Select LGA</option>
-                                            {ppaLgas.map(l => <option key={l} value={l}>{l}</option>)}
+                                            <option value="">Select Day</option>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Tuesday">Tuesday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
                                         </select>
                                     </div>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CDS Group</label>
-                                        <input
-                                            type="text"
-                                            name="cds_group"
-                                            value={formData.cds_group}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white"
-                                        />
-                                    </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">POP Date (Expected)</label>
                                         <input
@@ -228,7 +245,7 @@ const SettingsModal = ({ isOpen, onClose, user }) => {
                                             name="pop_date"
                                             value={formData.pop_date}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#2c2d2e] dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500/50"
                                         />
                                     </div>
                                 </>

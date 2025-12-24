@@ -16,8 +16,19 @@ class User(Base):
     mobilization_date = Column(String, nullable=True)
     pop_date = Column(String, nullable=True)
     cds_group = Column(String, nullable=True)
+    cds_day = Column(String, nullable=True) # Mon-Fri
     lga = Column(String, nullable=True) # PPA LGA
     address = Column(String, nullable=True)
     state_residence = Column(String, nullable=True)
     lga_residence = Column(String, nullable=True)
+
+class News(Base):
+    __tablename__ = "news"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    content = Column(String) # Summary or simple content
+    date = Column(String) # For now keeping string as per frontend request "Today, 10:00 AM" or ISO
+    type = Column(String) # Mobilization, Official, Guide
+    url = Column(String, nullable=True)
 

@@ -1,37 +1,30 @@
 from fastapi import APIRouter, Depends
-from models import User
+from models import User, News
+from database import get_db
+from sqlalchemy.orm import Session
 from auth import get_current_user
 from typing import List
 import datetime
 
 router = APIRouter(prefix="/api", tags=["Data"])
 
+from models import News
+
 @router.get("/news")
-def get_news():
-    # Return news with real links and formatted times
-    return [
-        {
-            "id": 1, 
-            "title": "2025 Batch A Online Registration Starts Soon", 
-            "date": "Today, 10:00 AM", 
-            "type": "Mobilization",
-            "url": "https://nysc.gov.ng/news-and-events"
-        },
-        {
-            "id": 2, 
-            "title": "DG NYSC Warns Against Fake News", 
-            "date": "Yesterday, 4:30 PM", 
-            "type": "Official",
-            "url": "https://nysc.gov.ng/"
-        },
-        {
-            "id": 3, 
-            "title": "Senate List Updates for Foreign Students", 
-            "date": "Dec 20, 2:15 PM", 
-            "type": "Guide",
-            "url": "https://portal.nysc.org.ng/nysc1/VerifySenateLists.aspx"
-        },
-    ]
+def get_news(db: Session = Depends(get_db)):
+    news_items = db.query(News).order_by(News.id.desc()).limit(10).all()
+    if not news_items:
+        # Fallback for initial load
+        return [
+            {
+                "id": 1, 
+                "title": "2025 Batch A Online Registration Starts Soon", 
+                "date": "Today, 10:00 AM", 
+                "type": "Mobilization", 
+                "url": "https://nysc.gov.ng"
+            }
+        ]
+    return news_items
 
 @router.get("/timeline")
 def get_timeline(user: User = Depends(get_current_user)):

@@ -19,6 +19,7 @@ class UserCreate(BaseModel):
     mobilization_date: str = None
     pop_date: str = None
     cds_group: str = None
+    cds_day: str = None
     lga: str = None # PPA LGA
     state_residence: str = None
     lga_residence: str = None
@@ -42,6 +43,7 @@ class UserResponse(BaseModel):
     roles: str = "Corps Member"
     state: str | None
     cds_group: str | None = None
+    cds_day: str | None = None
     lga: str | None = None
     state_residence: str | None = None
     lga_residence: str | None = None
@@ -159,6 +161,7 @@ class UserUpdate(BaseModel):
     role: str = None
     state: str = None
     cds_group: str = None
+    cds_day: str = None
     lga: str = None
     state_residence: str = None
     lga_residence: str = None
@@ -173,6 +176,7 @@ def update_profile(user_update: UserUpdate, current_user: User = Depends(get_cur
     if user_update.role: current_user.role = user_update.role
     if user_update.state: current_user.state = user_update.state
     if user_update.cds_group: current_user.cds_group = user_update.cds_group
+    if user_update.cds_day: current_user.cds_day = user_update.cds_day
     if user_update.lga: current_user.lga = user_update.lga
     if user_update.state_residence: current_user.state_residence = user_update.state_residence
     if user_update.lga_residence: current_user.lga_residence = user_update.lga_residence
@@ -194,6 +198,7 @@ def update_profile(user_update: UserUpdate, current_user: User = Depends(get_cur
         role=current_user.role,
         state=current_user.state,
         cds_group=current_user.cds_group,
+        cds_day=current_user.cds_day,
         lga=current_user.lga,
         state_residence=current_user.state_residence,
         lga_residence=current_user.lga_residence,
@@ -214,6 +219,7 @@ def read_users_me(current_user: User = Depends(get_current_user)):
         role=current_user.role,
         state=current_user.state,
         cds_group=current_user.cds_group,
+        cds_day=current_user.cds_day,
         lga=current_user.lga,
         state_residence=current_user.state_residence,
         lga_residence=current_user.lga_residence,

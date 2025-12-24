@@ -29,3 +29,34 @@ def get_stats(current_user: User = Depends(get_current_user), db: Session = Depe
         "pcms": pcms,
         "active_today": 12 # Mock for now
     }
+
+from pydantic import BaseModel
+
+class NewsCreate(BaseModel):
+    title: str
+    content: str
+    type: str # Mobilization, Official, Guide
+    url: str | None = None
+
+from models import News
+import datetime
+
+@router.post("/news")
+def create_news(news: NewsCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.role != "Official":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Format date as requested by frontend: "Day, Time"
+    now = datetime.datetime.now()
+    formatted_date = now.strftime("%b %d, %I:%M %p") # Dec 24, 10:00 AM
+    
+    new_news = News(
+        title=news.title,
+        content=news.content,
+        type=news.type,
+        url=news.url,
+        date=formatted_date
+    )
+    db.add(new_news)
+    db.commit()
+    return {"message": "News posted successfully"}

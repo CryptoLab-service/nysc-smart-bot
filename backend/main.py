@@ -31,17 +31,40 @@ from database import engine, Base
 import models
 from routers import auth, data, admin
 from fastapi.staticfiles import StaticFiles
+from auth import get_password_hash
 
 # Create Database Tables
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
+
+def seed_admin():
+    db = SessionLocal()
+    try:
+        admin_email = "admin@nysc.gov.ng"
+        existing_admin = db.query(User).filter(User.email == admin_email).first()
+        if not existing_admin:
+            print(f"Creating Super Admin: {admin_email}")
+            admin = User(
+                email=admin_email,
+                hashed_password=get_password_hash("admin123"),
+                name="NYSC Administrator",
+                role="Official",
+                state="Abuja"
+            )
+            db.add(admin)
+            db.commit()
+    except Exception as e:
+        print(f"Error seeding admin: {e}")
+    finally:
+        db.close()
 
 # Mount Static Files (for PDF resources)
 os.makedirs("static", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include Routers
-app.include_router(data.router)
 app.include_router(auth.router)
+app.include_router(chat.router)
+app.include_router(data.router)
 app.include_router(admin.router)
 
 DB_PATH = "chroma_db"
