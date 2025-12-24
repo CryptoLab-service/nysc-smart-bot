@@ -12,5 +12,6 @@ langchain-google-genai
 pypdf
 fastapi
 uvicorn
+alembic
 
 
