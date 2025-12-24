@@ -206,6 +206,7 @@ def home():
 
 @app.on_event("startup")
 async def startup_event():
+    seed_admin()
     print("\n" + "="*50)
     print(" NYSC SMART BOT BACKEND IS RUNNING")
     print("="*50)
