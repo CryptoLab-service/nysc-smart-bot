@@ -19,7 +19,9 @@ class UserCreate(BaseModel):
     mobilization_date: str = None
     pop_date: str = None
     cds_group: str = None
-    lga: str = None
+    lga: str = None # PPA LGA
+    state_residence: str = None
+    lga_residence: str = None
     address: str = None
 
 class UserLogin(BaseModel):
@@ -41,6 +43,8 @@ class UserResponse(BaseModel):
     state: str | None
     cds_group: str | None = None
     lga: str | None = None
+    state_residence: str | None = None
+    lga_residence: str | None = None
     address: str | None = None
     phone: str | None = None
     mobilization_date: str | None = None
@@ -156,6 +160,8 @@ class UserUpdate(BaseModel):
     state: str = None
     cds_group: str = None
     lga: str = None
+    state_residence: str = None
+    lga_residence: str = None
     address: str = None
     phone: str = None
     pop_date: str = None
@@ -168,6 +174,8 @@ def update_profile(user_update: UserUpdate, current_user: User = Depends(get_cur
     if user_update.state: current_user.state = user_update.state
     if user_update.cds_group: current_user.cds_group = user_update.cds_group
     if user_update.lga: current_user.lga = user_update.lga
+    if user_update.state_residence: current_user.state_residence = user_update.state_residence
+    if user_update.lga_residence: current_user.lga_residence = user_update.lga_residence
     if user_update.address: current_user.address = user_update.address
     if user_update.phone: current_user.phone = user_update.phone
     if user_update.pop_date: current_user.pop_date = user_update.pop_date
@@ -187,6 +195,8 @@ def update_profile(user_update: UserUpdate, current_user: User = Depends(get_cur
         state=current_user.state,
         cds_group=current_user.cds_group,
         lga=current_user.lga,
+        state_residence=current_user.state_residence,
+        lga_residence=current_user.lga_residence,
         address=current_user.address,
         phone=current_user.phone,
         mobilization_date=current_user.mobilization_date,
@@ -205,6 +215,8 @@ def read_users_me(current_user: User = Depends(get_current_user)):
         state=current_user.state,
         cds_group=current_user.cds_group,
         lga=current_user.lga,
+        state_residence=current_user.state_residence,
+        lga_residence=current_user.lga_residence,
         address=current_user.address,
         phone=current_user.phone,
         mobilization_date=current_user.mobilization_date,

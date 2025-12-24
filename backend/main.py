@@ -29,7 +29,7 @@ app.add_middleware(
 # --- SETUP TOOLS ---
 from database import engine, Base
 import models
-from routers import auth, data
+from routers import auth, data, admin
 from fastapi.staticfiles import StaticFiles
 
 # Create Database Tables
@@ -40,8 +40,9 @@ os.makedirs("static", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include Routers
-app.include_router(auth.router)
 app.include_router(data.router)
+app.include_router(auth.router)
+app.include_router(admin.router)
 
 DB_PATH = "chroma_db"
 embedding_function = None

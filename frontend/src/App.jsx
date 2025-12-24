@@ -7,6 +7,8 @@ import Dashboard from './components/Dashboard'
 import ResourceLibrary from './components/ResourceLibrary'
 import ToolsHub from './components/ToolsHub'
 import Community from './components/Community'
+import AdminDashboard from './components/AdminDashboard'
+import Checklist from './components/Checklist'
 import { useAuth } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
 import './index.css'
@@ -111,9 +113,15 @@ function App() {
         onLoginClick={() => { }} // No-op, already logged in
         currentView={currentView}
         setView={(view) => {
-          setCurrentView(view)
+          if (view === 'tools-checklist') {
+            setCurrentView('checklist')
+          } else {
+            setCurrentView(view)
+          }
           if (window.innerWidth < 768) setIsSidebarOpen(false)
         }}
+        showAdmin={user?.role === 'Official'}
+        onAdminClick={() => setCurrentView('admin')}
       />
 
       {currentView === 'dashboard' && (
@@ -133,6 +141,14 @@ function App() {
 
       {currentView === 'community' && (
         <Community onBack={() => setCurrentView('dashboard')} />
+      )}
+
+      {currentView === 'checklist' && (
+        <Checklist onBack={() => setCurrentView('tools')} />
+      )}
+
+      {currentView === 'admin' && (
+        <AdminDashboard onViewChange={setCurrentView} />
       )}
 
       <div className={currentView === 'chat' ? 'flex-1 h-full' : 'hidden'}>

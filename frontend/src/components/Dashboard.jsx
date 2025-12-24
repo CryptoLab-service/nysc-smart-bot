@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Calendar, MessageSquare, BookOpen, CheckCircle, Clock, LogOut } from 'lucide-react'
+import { Calendar, MessageSquare, BookOpen, CheckCircle, Clock, LogOut, Settings, User as UserIcon, X, ExternalLink, Bell, Search } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
+import SettingsModal from './SettingsModal'
 
 const Dashboard = ({ user, onViewChange }) => {
     const [greeting, setGreeting] = useState('')
     const [news, setNews] = useState([])
     const [timeline, setTimeline] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const [selectedNews, setSelectedNews] = useState(null) // For News Modal
     const { logout } = useAuth()
 
     useEffect(() => {
@@ -30,7 +33,6 @@ const Dashboard = ({ user, onViewChange }) => {
                 setTimeline(timelineRes.data)
             } catch (error) {
                 console.error("Failed to fetch dashboard data", error)
-                // toast.error("Failed to load dashboard data")
             } finally {
                 setLoading(false)
             }
@@ -55,18 +57,49 @@ const Dashboard = ({ user, onViewChange }) => {
                             Here's what's happening with your NYSC journey today.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2c2d2e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
-                            <Calendar size={18} className="text-green-600" />
-                            <span>{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+
+                    <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
+                        {/* Search Bar */}
+                        <div className="relative w-full md:w-64">
+                            <input
+                                type="text"
+                                placeholder="Search updates..."
+                                className="w-full pl-10 pr-4 py-2 rounded-xl bg-white dark:bg-[#2c2d2e] border border-gray-100 dark:border-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all dark:text-white"
+                            />
+                            <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
                         </div>
-                        <button
-                            onClick={logout}
-                            className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 transition-colors"
-                            title="Logout"
-                        >
-                            <LogOut size={20} />
-                        </button>
+
+                        <div className="flex items-center gap-2 self-end md:self-auto">
+                            {/* Date Widget */}
+                            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2c2d2e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
+                                <Calendar size={18} className="text-green-600" />
+                                <span>{new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                            </div>
+
+                            {/* Notification Bell */}
+                            <button className="p-2 bg-white dark:bg-[#2c2d2e] rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors relative">
+                                <Bell size={20} />
+                                <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-[#2c2d2e]"></span>
+                            </button>
+
+                            {/* Settings Button */}
+                            <button
+                                onClick={() => setIsSettingsOpen(true)}
+                                className="p-2 bg-white dark:bg-[#2c2d2e] rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                                title="Profile Settings"
+                            >
+                                <Settings size={20} />
+                            </button>
+
+                            {/* Logout Button */}
+                            <button
+                                onClick={logout}
+                                className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 transition-colors"
+                                title="Logout"
+                            >
+                                <LogOut size={20} />
+                            </button>
+                        </div>
                     </div>
                 </header>
 
@@ -85,23 +118,30 @@ const Dashboard = ({ user, onViewChange }) => {
                             </span>
                         </div>
 
+                        {/* Progress Bar */}
+                        <div className="mb-6 bg-black/20 rounded-full h-2 overflow-hidden backdrop-blur-sm">
+                            <div className="h-full bg-white/80 rounded-full" style={{ width: isCorpsMember ? '45%' : '10%' }}></div>
+                        </div>
+
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             {isCorpsMember ? (
                                 <>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm">
-                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{timeline?.deployment_state || user?.state || '--'}</span>
-                                        <span className="text-xs text-green-100 uppercase tracking-wider">Deployment</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.state || timeline?.deployment_state || 'Not yet assigned'}</span>
+                                        <span className="text-xs text-green-100 uppercase tracking-wider">State of Deployment</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm">
-                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{timeline?.pop_date || user?.pop_date || '--'}</span>
-                                        <span className="text-xs text-green-100 uppercase tracking-wider">POP Date</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">
+                                            {user?.pop_date ? new Date(user.pop_date).toLocaleDateString('en-US', { weekday: 'short', month: 'long', year: 'numeric' }) : (timeline?.pop_date || '--')}
+                                        </span>
+                                        <span className="text-xs text-green-100 uppercase tracking-wider">Date of Discharge</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-60">
-                                        <span className="block text-3xl font-bold mb-1">--</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.cds_group || 'Not yet assigned'}</span>
                                         <span className="text-xs text-green-100 uppercase tracking-wider">CDS Group</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-60">
-                                        <span className="block text-3xl font-bold mb-1">--</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.lga || 'Not yet assigned'}</span>
                                         <span className="text-xs text-green-100 uppercase tracking-wider">LGA</span>
                                     </div>
                                 </>
@@ -116,7 +156,7 @@ const Dashboard = ({ user, onViewChange }) => {
                                         <span className="text-xs text-green-100 uppercase tracking-wider">Registration</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-60">
-                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">--</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.state_code || '--'}</span>
                                         <span className="text-xs text-green-100 uppercase tracking-wider">Callup No</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-60">
@@ -179,16 +219,14 @@ const Dashboard = ({ user, onViewChange }) => {
                 <section className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Latest Updates</h2>
-                        <a href="https://nysc.gov.ng" target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 font-medium hover:underline">View All</a>
+                        <a href="https://nysc.gov.ng/news-and-events" target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 font-medium hover:underline">View All</a>
                     </div>
 
                     <div className="bg-white dark:bg-[#1e1f20] rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden">
                         {news.length > 0 ? news.map(newsItem => (
-                            <a
+                            <div
                                 key={newsItem.id}
-                                href={newsItem.url || '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                onClick={() => setSelectedNews(newsItem)}
                                 className="block p-5 hover:bg-gray-50 dark:hover:bg-[#2c2d2e] transition-colors cursor-pointer group"
                             >
                                 <div className="flex justify-between items-start mb-1">
@@ -203,7 +241,7 @@ const Dashboard = ({ user, onViewChange }) => {
                                 <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 group-hover:text-green-600 transition-colors">
                                     {newsItem.title}
                                 </h3>
-                            </a>
+                            </div>
                         )) : (
                             <div className="p-8 text-center text-gray-400 text-sm">Loading updates...</div>
                         )}
@@ -211,6 +249,51 @@ const Dashboard = ({ user, onViewChange }) => {
                 </section>
 
             </div>
+
+            {/* Settings Modal */}
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                user={user}
+            />
+
+            {/* News Modal */}
+            {selectedNews && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+                    <div className="bg-white dark:bg-[#1e1f20] rounded-3xl w-full max-w-lg p-6 shadow-2xl relative">
+                        <button
+                            onClick={() => setSelectedNews(null)}
+                            className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                        >
+                            <X size={20} className="text-gray-500" />
+                        </button>
+
+                        <div className="mb-4">
+                            <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-md ${selectedNews.type === 'Mobilization' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
+                                {selectedNews.type}
+                            </span>
+                            <span className="ml-3 text-xs text-gray-400">{selectedNews.date}</span>
+                        </div>
+
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                            {selectedNews.title}
+                        </h2>
+
+                        <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                            This is a summary of the news update. For the full story and official details, please visit the official NYSC website below.
+                        </p>
+
+                        <a
+                            href={selectedNews.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium transition-colors"
+                        >
+                            Read Full Update <ExternalLink size={18} />
+                        </a>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

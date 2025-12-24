@@ -16,6 +16,8 @@ class User(Base):
     mobilization_date = Column(String, nullable=True)
     pop_date = Column(String, nullable=True)
     cds_group = Column(String, nullable=True)
-    lga = Column(String, nullable=True)    
+    lga = Column(String, nullable=True) # PPA LGA
     address = Column(String, nullable=True)
+    state_residence = Column(String, nullable=True)
+    lga_residence = Column(String, nullable=True)
 
