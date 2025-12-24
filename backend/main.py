@@ -29,7 +29,7 @@ app.add_middleware(
 # --- SETUP TOOLS ---
 from database import engine, Base
 import models
-from routers import auth, data, admin
+from routers import auth, data, admin, chat
 from fastapi.staticfiles import StaticFiles
 from auth import get_password_hash
 
