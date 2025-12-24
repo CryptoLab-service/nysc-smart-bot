@@ -151,7 +151,7 @@ def get_nysc_answer(question: str):
             return "I am currently in Maintenance Mode. AI features are temporarily disabled. Please check back later or contact support for assistance."
     except Exception as e:
         print(f"Error: {e}")
-        return "I am currently upgrading my database to serve you better. Please ask again in a moment."
+        return "I am currently upgrading my database to serve you better. Please try again in a moment."
 
 # --- API ENDPOINTS ---
 
@@ -185,6 +185,6 @@ async def startup_event():
     print("\n" + "="*50)
     print(" NYSC SMART BOT BACKEND IS RUNNING")
     print("="*50)
-    print(" API Documentation: http://localhost:8000/docs")
-    print(" Frontend API URL:  http://localhost:8000")
+    print(" API Documentation: /docs")
+    print(" Frontend API URL:  (Configured via ENV)")
     print("="*50 + "\n")

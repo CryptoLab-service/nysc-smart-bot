@@ -18,6 +18,9 @@ class UserCreate(BaseModel):
     state_code: str = None
     mobilization_date: str = None
     pop_date: str = None
+    cds_group: str = None
+    lga: str = None
+    address: str = None
 
 class UserLogin(BaseModel):
     email: str
@@ -34,7 +37,14 @@ class UserResponse(BaseModel):
     email: str
     name: str
     role: str
+    roles: str = "Corps Member"
     state: str | None
+    cds_group: str | None = None
+    lga: str | None = None
+    address: str | None = None
+    phone: str | None = None
+    mobilization_date: str | None = None
+    pop_date: str | None = None
     token: str | None = None
 
     class Config:
@@ -140,6 +150,50 @@ def social_login(user: UserSocialLogin, db: Session = Depends(get_db)):
         token=access_token
     )
 
+class UserUpdate(BaseModel):
+    name: str = None
+    role: str = None
+    state: str = None
+    cds_group: str = None
+    lga: str = None
+    address: str = None
+    phone: str = None
+    pop_date: str = None
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(user_update: UserUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    # Update fields if provided
+    if user_update.name: current_user.name = user_update.name
+    if user_update.role: current_user.role = user_update.role
+    if user_update.state: current_user.state = user_update.state
+    if user_update.cds_group: current_user.cds_group = user_update.cds_group
+    if user_update.lga: current_user.lga = user_update.lga
+    if user_update.address: current_user.address = user_update.address
+    if user_update.phone: current_user.phone = user_update.phone
+    if user_update.pop_date: current_user.pop_date = user_update.pop_date
+
+    try:
+        db.commit()
+        db.refresh(current_user)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
+    
+    return UserResponse(
+        id=current_user.id,
+        email=current_user.email,
+        name=current_user.name,
+        role=current_user.role,
+        state=current_user.state,
+        cds_group=current_user.cds_group,
+        lga=current_user.lga,
+        address=current_user.address,
+        phone=current_user.phone,
+        mobilization_date=current_user.mobilization_date,
+        pop_date=current_user.pop_date,
+        token=None # No new token needed
+    )
+
 @router.get("/me", response_model=UserResponse)
 def read_users_me(current_user: User = Depends(get_current_user)):
     # Create response compatible with UserResponse
@@ -149,5 +203,11 @@ def read_users_me(current_user: User = Depends(get_current_user)):
         name=current_user.name,
         role=current_user.role,
         state=current_user.state,
+        cds_group=current_user.cds_group,
+        lga=current_user.lga,
+        address=current_user.address,
+        phone=current_user.phone,
+        mobilization_date=current_user.mobilization_date,
+        pop_date=current_user.pop_date,
         token=None # No new token needed
     )

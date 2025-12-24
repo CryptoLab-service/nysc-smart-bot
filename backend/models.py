@@ -15,3 +15,7 @@ class User(Base):
     state_code = Column(String, nullable=True)
     mobilization_date = Column(String, nullable=True)
     pop_date = Column(String, nullable=True)
+    cds_group = Column(String, nullable=True)
+    lga = Column(String, nullable=True)    
+    address = Column(String, nullable=True)
+
