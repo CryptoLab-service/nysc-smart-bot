@@ -40,10 +40,10 @@ def seed_admin():
     db = SessionLocal()
     try:
         admin_email = "admin@nysc.gov.ng"
-        existing_admin = db.query(User).filter(User.email == admin_email).first()
+        existing_admin = db.query(models.User).filter(models.User.email == admin_email).first()
         if not existing_admin:
             print(f"Creating Super Admin: {admin_email}")
-            admin = User(
+            admin = models.User(
                 email=admin_email,
                 hashed_password=get_password_hash("admin123"),
                 name="NYSC Administrator",
