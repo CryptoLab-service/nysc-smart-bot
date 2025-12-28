@@ -4,13 +4,7 @@ echo   NYSC SMART COMPANION - DEVELOPER STARTUP
 echo ===================================================
 
 echo.
-echo [1/3] Clearing old database to fix schema issues...
-if exist "backend\nysc_bot.db" (
-    del "backend\nysc_bot.db"
-    echo    - Deleted old nysc_bot.db
-) else (
-    echo    - No existing database found.
-)
+echo [1/3] Database check skipped to preserve data.
 
 echo.
 echo [2/3] Starting Backend (New Terminal)...
