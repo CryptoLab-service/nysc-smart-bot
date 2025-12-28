@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await axios.post(`${API_URL}/auth/login`, { email, password }, { timeout: 15000 })
+            const res = await axios.post(`${API_URL}/auth/login`, { email, password }, { timeout: 60000 })
             const { token, ...userData } = res.data
             localStorage.setItem('nysc_token', token)
             setAuthHeader(token)
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (userData) => {
         try {
-            const res = await axios.post(`${API_URL}/auth/signup`, userData, { timeout: 15000 })
+            const res = await axios.post(`${API_URL}/auth/signup`, userData, { timeout: 60000 })
             const { token, ...user } = res.data
             localStorage.setItem('nysc_token', token)
             setAuthHeader(token)
