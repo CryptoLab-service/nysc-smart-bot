@@ -1,119 +1,113 @@
-# NYSC Smart Companion AI 🇳🇬
+# 🇳🇬 NYSC Smart Companion (AI-Powered)
 
-![NYSC AI](https://img.shields.io/badge/Status-Live-green) ![License](https://img.shields.io/badge/License-MIT-blue)
+![Build Status](https://img.shields.io/badge/Status-Live-green) ![License](https://img.shields.io/badge/License-MIT-blue) ![React](https://img.shields.io/badge/Frontend-React_19-cyan) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-teal)
 
-A next-generation **AI-powered assistant** designed to guide Prospective and Serving Corps Members through their Service Year. This project combines a **FastAPI** backend with a modern **React (Vite)** frontend to deliver real-time answers, personalized timelines, and resource management.
+A premium, AI-driven assistant designed to guide Nigerian Youth Corps Members through their Service Year. From intelligent query resolution to automated clearance workflows, **NYSC Smart Companion** is the ultimate digital toolkit.
 
 ---
 
-## 🚀 Live Demo
-- **Frontend (Vercel)**: [https://nysc-smart-bot.vercel.app](https://nysc-smart-bot.vercel.app)
-- **Backend API (Render)**: [https://nysc-bot-api.onrender.com](https://nysc-bot-api.onrender.com)
-- **Telegram Bot**: *(Run locally or verify via Webhook)*
+## ⚡ Quick Links
+- **🌐 Live App**: [https://nysc-smart-bot.vercel.app](https://nysc-smart-bot.vercel.app)
+- **🔌 API Documentation**: [https://nysc-bot-api.onrender.com/docs](https://nysc-bot-api.onrender.com/docs)
+- **📱 Telegram Bot**: *(Available via separate webhook)*
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    User([User]) <--> Client[React Frontend (Vite)]
+    Client <--> API[FastAPI Backend]
+    
+    subgraph "Backend Services"
+        API <--> Auth[Auth Service (JWT/Bcrypt)]
+        API <--> AI[LangChain AI Agent]
+        API <--> DB[(SQLite/Postgres Database)]
+        API <--> Scheduler[APScheduler (News Fetcher)]
+    end
+    
+    subgraph "External Integrations"
+        AI <--> Chroma[ChromaDB Vector Store]
+        AI <--> OpenAI[OpenAI/Gemini API]
+        AI <--> Tavily[Tavily Search API]
+    end
+```
 
 ---
 
 ## ✨ Key Features
 
-### 🤖 Intelligent AI Chat
-- **RAG System (Retrieval Augmentation Generation)**: built with LangChain & ChromaDB.
-- **Context-Aware**: Knows the current date and NYSC specific procedures.
-- **Hybrid Search**: Combines internal official guidelines with live web search (Tavily HTTP) for recent news.
+### 🧠 Hybrid AI Core
+- **RAG + Real-Time Web Search**: Combines official NYSC Bye-Laws (Vector Store) with live news from the web (Tavily) to answer questions like *"When is 2025 Batch A streaming?"* accurately.
+- **Context-Aware**: Understands the user's state (PCM, Serving, Official) to tailor responses.
 
-### 🔐 Robust Authentication
-- **Secure Signup/Login**: JWT-based authentication with Bcrypt hashing.
-- **Social Auth Integration**: Login seamlessly with Google, Facebook, or GitHub.
-- **Role-Based Access**: Specialized views for PCMs, Corps Members, and Officials.
-- **Persistent Sessions**: Auto-login functionality via local storage tokens.
+### 🎨 Premium UI/UX
+- **Glassmorphism Design**: Modern, frosted-glass interface with smooth framer-motion animations.
+- **Mobile-First**: Dedicated Bottom Navigation Bar for mobile users, mimicking a native app experience.
+- **Tools Hub**: Features a client-side **ID Card Generator** (HTML5 Canvas) and Monthly Clearance Tracker.
 
-### 📅 Dynamic Timeline & Dashboard
-- **Smart Timeline**: Automatically calculates Mobilization, Camp, and P.O.P dates based on user inputs.
-- **ResourceHub**: Download official PDFs (Bye-Laws, SAED Handbook) directly from the dashboard.
-- **Responsive UI**: Beautiful dark/light mode capable interface built with TailwindCSS.
+### 🔐 Secure Role Management
+- **Multi-Role Dashboards**:
+    - **PCMs**: Mobilization timeline, Packing Checklists.
+    - **Corps Members**: Clearance requests, PPA details.
+    - **Admins**: Content Management Systems (CMS) for posting News and uploading Resources.
 
-### 📱 Telegram Integration
-- **Cross-Platform**: Chat with the same AI intelligence via Telegram.
-- **Webhook Support**: Fully integrated webhook setup for real-time responses.
-
----
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Framework**: FastAPI (Python)
-- **Database**: SQLite (SQLAlchemy ORM)
-- **AI/ML**: LangChain, OpenAI/Gemini API, ChromaDB (Vector Store)
-- **Tools**: Uvicorn, Python-Dotenv
-
-### Frontend
-- **Framework**: React 19 (Vite)
-- **Styling**: TailwindCSS 4, Lucide Icons
-- **State/Auth**: Context API, Axios, React Hot Toast
+### 🛠️ Automated Operations
+- **News Aggregator**: A background scheduler fetches fresh NYSC news every 6 hours automatically.
+- **Resource Library**: Dynamic repository for downloadable official forms and guides.
 
 ---
 
-## ⚙️ Local Setup Guide
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js & npm
+- Node.js 18+
 - Python 3.10+
 - Git
 
-### 1. Clone & Install
+### 1. Installation
+Clone the repository:
 ```bash
-git clone https://github.com/your-username/nysc-bot.git
+git clone https://github.com/CryptoLab-service/nysc-smart-bot.git
 cd nysc-bot
 ```
 
-### 2. Environment Variables
-Create a `.env` file in `backend/` and add your keys:
+### 2. Backend Setup
+```bash
+cd backend
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# Mac/Linux
+source venv/bin/activate
+
+pip install -r requirements.txt
+```
+**Configure Environment**: Create a `.env` file in `backend/`:
 ```env
-OPENAI_API_KEY=sk-...
-GEMINI_API_KEY=...
-TAVILY_API_KEY=tvly-...
-TELEGRAM_TOKEN=123456:ABC...
-SECRET_KEY=your_secret_key
+OPENAI_API_KEY=your_key
+GEMINI_API_KEY=your_key
+TAVILY_API_KEY=your_key
+SECRET_KEY=super_secret
+DATABASE_URL=sqlite:///./nysc_bot.db
+```
+Start Server:
+```bash
+uvicorn main:app --reload
 ```
 
-### 3. Run Locally (The Easy Way)
-We have included a startup script for Windows:
-- Double-click `start_app.bat`
-
-**Or manually:**
-- **Backend**: `cd backend && uvicorn main:app --reload --port 8000`
-- **Frontend**: `cd frontend && npm run dev`
-
----
-
-## ☁️ Deployment Guide
-
-### Backend (Render)
-1. Push code to GitHub.
-2. Create a new **Web Service** on Render connected to your repo.
-3. **Build Command**: `pip install -r backend/requirements.txt`
-4. **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port 10000`
-5. **Environment Variables**: Add all keys from your local `.env` to Render Dashboard.
-
-### Frontend (Vercel)
-1. Import your GitHub repo to Vercel.
-2. **Framework Preset**: Vite
-3. **Root Directory**: `frontend`
-4. **Environment Variables**:
-   - `VITE_API_BASE_URL`: `https://nysc-bot-api.onrender.com`
-
-### Telegram Webhook
-To connect your Telegram Bot to the live Render Backend:
-1. Ensure your Render backend is deployed.
-2. Locally, run the helper script:
-   ```bash
-   python backend/set_webhook.py
-   ```
-3. Enter your Render URL when prompted (e.g., `https://nysc-bot-api.onrender.com`).
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
-## 🤝 Contributing
-Contributions are welcome! Please fork the repository and submit a pull request.
+## 🤝 Contribution
+We welcome contributions! Please see `CONTRIBUTING.md` for details on how to submit Pull Requests.
 
 ## 📄 License
-This project is licensed under the MIT License.
+This project is open-sourced under the MIT License.
