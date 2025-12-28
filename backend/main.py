@@ -36,24 +36,64 @@ from auth import get_password_hash
 # Create Database Tables
 Base.metadata.create_all(bind=engine)
 
-def seed_admin():
+def seed_users():
     db = SessionLocal()
     try:
+        # 1. Super Admin
         admin_email = "admin@nysc.gov.ng"
-        existing_admin = db.query(models.User).filter(models.User.email == admin_email).first()
-        if not existing_admin:
+        if not db.query(models.User).filter(models.User.email == admin_email).first():
             print(f"Creating Super Admin: {admin_email}")
-            admin = models.User(
+            db.add(models.User(
                 email=admin_email,
                 hashed_password=get_password_hash("admin123"),
-                name="NYSC Administrator",
+                name="System Administrator",
+                role="Admin",
+                state="Headquarters"
+            ))
+
+        # 2. Official
+        off_email = "official@nysc.gov.ng"
+        if not db.query(models.User).filter(models.User.email == off_email).first():
+            print(f"Creating Official: {off_email}")
+            db.add(models.User(
+                email=off_email,
+                hashed_password=get_password_hash("official123"),
+                name="Lagos Coordinator",
                 role="Official",
-                state="Abuja"
-            )
-            db.add(admin)
-            db.commit()
+                state="Lagos"
+            ))
+
+        # 3. Corps Member
+        cm_email = "cm@nysc.gov.ng"
+        if not db.query(models.User).filter(models.User.email == cm_email).first():
+            print(f"Creating Corps Member: {cm_email}")
+            db.add(models.User(
+                email=cm_email,
+                hashed_password=get_password_hash("cm123"),
+                name="Adewale Corps",
+                role="Corps Member",
+                state="Lagos",
+                state_code="LA/24A/1234",
+                lga="Ikeja",
+                ids_group="ICT",
+                ppa="Lagos State Secretariat"
+            ))
+
+        # 4. PCM
+        pcm_email = "pcm@nysc.gov.ng"
+        if not db.query(models.User).filter(models.User.email == pcm_email).first():
+            print(f"Creating PCM: {pcm_email}")
+            db.add(models.User(
+                email=pcm_email,
+                hashed_password=get_password_hash("pcm123"),
+                name="Chidinma PCM",
+                role="PCM",
+                state="Pending"
+            ))
+            
+        db.commit()
     except Exception as e:
-        print(f"Error seeding admin: {e}")
+        print(f"Error seeding users: {e}")
     finally:
         db.close()
 
@@ -205,7 +245,7 @@ def home():
 
 @app.on_event("startup")
 async def startup_event():
-    seed_admin()
+    seed_users()
     print("\n" + "="*50)
     print(" NYSC SMART BOT BACKEND IS RUNNING")
     print("="*50)

@@ -100,6 +100,13 @@ function App() {
     return <AuthPage theme={theme} toggleTheme={toggleTheme} />
   }
 
+  // Auto-redirect Admin
+  useEffect(() => {
+    if (user?.role === 'Admin' || user?.email === 'admin@nysc.gov.ng') {
+      setCurrentView('admin')
+    }
+  }, [user])
+
   // Logged In -> Show Dashboard
   return (
     <div className={`flex h-screen bg-white dark:bg-[#0f0f10] transition-colors duration-300 overflow-hidden ${theme}`}>
@@ -120,7 +127,7 @@ function App() {
           }
           if (window.innerWidth < 768) setIsSidebarOpen(false)
         }}
-        showAdmin={user?.role === 'Official'}
+        showAdmin={user?.role === 'Admin' || user?.email === 'admin@nysc.gov.ng'}
         onAdminClick={() => setCurrentView('admin')}
       />
 

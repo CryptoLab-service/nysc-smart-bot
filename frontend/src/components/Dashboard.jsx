@@ -171,104 +171,135 @@ const Dashboard = ({ user, onViewChange }) => {
                     </div>
                 </section>
 
-                {/* Auxiliary Widgets for Corps Members */}
-                {isCorpsMember && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{ animationDelay: '0.05s' }}>
-                        {/* Monthly Clearance Status */}
-                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
-                            <div>
-                                <h3 className="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Monthly Clearance</h3>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">Pending</p>
-                                <p className="text-xs text-orange-500 font-medium mt-1">Due: Jan 5th, 2026</p>
-                            </div>
-                            <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-full text-orange-600 dark:text-orange-400">
-                                <Clock size={24} />
-                            </div>
-                        </div>
+                {/* Modular Dashboard Cards (5-Card Layout) */}
+                <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
 
-                        {/* PPA Details */}
-                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
-                            <div>
-                                <h3 className="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Place of Primary Assignment</h3>
-                                <p className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[180px]">
-                                    {user?.ppa || "Not Assigned"}
-                                </p>
-                                <p className="text-xs text-gray-400 font-medium mt-1">{user?.lga || "LGA Not Set"}</p>
-                            </div>
-                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full text-blue-600 dark:text-blue-400">
-                                <BookOpen size={24} />
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-
-                {/* Quick Actions & Links */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                    {/* Action Cards */}
-                    <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <button
-                            onClick={() => onViewChange('chat')}
-                            className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex items-start gap-4"
-                        >
-                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600 dark:text-blue-400">
+                    {/* Row 1: Shared Modules */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        {/* 1. Assistance */}
+                        <button onClick={() => onViewChange('chat')} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex flex-col gap-4 group">
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl w-fit text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                                 <MessageSquare size={24} />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Ask Assistant</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Get instant answers about NYSC.</p>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Assistance</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Chat with our AI assistant.</p>
                             </div>
                         </button>
 
-                        <div
-                            onClick={() => onViewChange('tools')}
-                            className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer text-left flex items-start gap-4"
-                        >
-                            <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-2xl text-orange-600 dark:text-orange-400">
-                                <CheckCircle size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Tools & Clearance</h3>
-                                <div className="mt-1">
-                                    <p className="text-xs font-semibold text-green-600 mb-0.5">Next Clearance: Jan 5th, 2026</p>
-                                    <p className="text-xs text-gray-400">Monthly biometrics due soon.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => onViewChange('resources')}
-                            className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex items-start gap-4"
-                        >
-                            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-2xl text-purple-600 dark:text-purple-400">
+                        {/* 2. Resource Library */}
+                        <button onClick={() => onViewChange('resources')} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex flex-col gap-4 group">
+                            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-2xl w-fit text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                                 <BookOpen size={24} />
                             </div>
                             <div>
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">Resource Library</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Download official handbooks.</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Official handbooks & guides.</p>
                             </div>
                         </button>
+
+                        {/* 3. Quick Links (Modal/Dropdown substitute) */}
+                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col gap-4 relative overflow-hidden">
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl text-gray-600 dark:text-gray-300">
+                                    <ExternalLink size={24} />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Links</h3>
+                            </div>
+                            <div className="space-y-2 relative z-10">
+                                <a href="https://portal.nysc.org.ng/" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Portal
+                                </a>
+                                <a href="https://nysc.gov.ng/" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Website
+                                </a>
+                                <a href="https://nyscselfservice.com.ng/" target="_blank" rel="noopener noreferrer" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Verify
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Quick Links Widget */}
-                    <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                            <ExternalLink size={18} className="text-gray-400" /> Quick Links
-                        </h3>
-                        <div className="space-y-3">
-                            <a href="https://portal.nysc.org.ng/nysc1/VerifySenateLists.aspx" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#2c2d2e] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Verify Senate List</span>
-                                <ExternalLink size={14} className="text-gray-400 group-hover:text-green-600" />
-                            </a>
-                            <a href="https://nysc.gov.ng/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#2c2d2e] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Official Website</span>
-                                <ExternalLink size={14} className="text-gray-400 group-hover:text-green-600" />
-                            </a>
-                            <a href="https://nyscselfservice.com.ng/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#2c2d2e] hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Self Service Portal</span>
-                                <ExternalLink size={14} className="text-gray-400 group-hover:text-green-600" />
-                            </a>
-                        </div>
+                    {/* Row 2: Role Specific Modules */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        {/* CORPS MEMBER CARDS */}
+                        {user?.role === 'Corps Member' && (
+                            <>
+                                <button onClick={() => onViewChange('tools')} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex items-center gap-4 group">
+                                    <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-2xl text-orange-600 dark:text-orange-400">
+                                        <Settings size={28} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Tools Hub</h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">Checklists, ID Generator & more</p>
+                                    </div>
+                                </button>
+
+                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Clearance</h3>
+                                        <span className="px-3 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                            Pending
+                                        </span>
+                                        <p className="text-xs text-gray-400 mt-2">Due Date: Jan 5th</p>
+                                    </div>
+                                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl text-green-600 dark:text-green-400">
+                                        <CheckCircle size={28} />
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {/* PCM CARDS */}
+                        {(user?.role === 'PCM' || !user?.role) && (
+                            <>
+                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl text-indigo-600 dark:text-indigo-400">
+                                            <UserIcon size={24} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Registration Guide</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Step-by-step for new PCMs.</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="p-3 bg-teal-50 dark:bg-teal-900/20 rounded-2xl text-teal-600 dark:text-teal-400">
+                                            <Calendar size={24} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Orientation Prep</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Camp requirements & dates.</p>
+                                </div>
+                            </>
+                        )}
+
+                        {/* OFFICIAL CARDS */}
+                        {user?.role === 'Official' && (
+                            <>
+                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-2xl text-red-600 dark:text-red-400">
+                                            <Activity size={24} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Oversight Tools</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Monitor Zonal Activities.</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600 dark:text-blue-400">
+                                            <CheckCircle size={24} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Clearance Mgmt</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Approve Monthly Clearance.</p>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 

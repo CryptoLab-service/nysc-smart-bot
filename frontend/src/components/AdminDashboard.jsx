@@ -69,7 +69,7 @@ const AdminDashboard = ({ onViewChange }) => {
                         <h1 className="text-2xl font-bold flex items-center gap-2">
                             <Shield className="text-red-500" /> Admin Portal
                         </h1>
-                        <p className="text-gray-400 text-sm mt-1">Hello, Official {user?.name}</p>
+                        <p className="text-gray-400 text-sm mt-1">Welcome Admin, {user?.name}</p>
                     </div>
                     <button onClick={logout} className="px-4 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition">
                         <LogOut size={18} />
