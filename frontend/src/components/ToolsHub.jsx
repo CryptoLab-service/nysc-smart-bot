@@ -3,6 +3,7 @@ import { CheckSquare, Calendar, Users, ArrowLeft, Plus, Trash2, Save, Download, 
 import { useAuth } from '../context/AuthContext'
 
 const ToolsHub = ({ onBack }) => {
+    const { user } = useAuth()
     const [activeTool, setActiveTool] = useState('checklist') // 'checklist', 'clearance', 'cds'
 
     return (
@@ -33,27 +34,43 @@ const ToolsHub = ({ onBack }) => {
                             }`}
                     >
                         <CheckSquare size={18} />
-                        Camp Checklist
+                        Orientation Prep
                     </button>
+
+                    {user?.role !== 'PCM' && (
+                        <>
+                            <button
+                                onClick={() => setActiveTool('clearance')}
+                                className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'clearance'
+                                    ? 'bg-green-600 text-white shadow-md'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
+                                    }`}
+                            >
+                                <Calendar size={18} />
+                                Clearance Tracker
+                            </button>
+                            <button
+                                onClick={() => setActiveTool('cds')}
+                                className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'cds'
+                                    ? 'bg-green-600 text-white shadow-md'
+                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
+                                    }`}
+                            >
+                                <Users size={18} />
+                                CDS Manager
+                            </button>
+                        </>
+                    )}
+
                     <button
-                        onClick={() => setActiveTool('clearance')}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'clearance'
+                        onClick={() => setActiveTool('id-card')}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'id-card'
                             ? 'bg-green-600 text-white shadow-md'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
                             }`}
                     >
-                        <Calendar size={18} />
-                        Clearance Tracker
-                    </button>
-                    <button
-                        onClick={() => setActiveTool('cds')}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'cds'
-                            ? 'bg-green-600 text-white shadow-md'
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
-                            }`}
-                    >
-                        <Users size={18} />
-                        CDS Manager
+                        <CreditCard size={18} />
+                        ID Generator
                     </button>
                 </div>
 
@@ -352,7 +369,7 @@ const IDCardGenerator = () => {
         ctx.fillRect(40, 110, 120, 140)
         ctx.strokeStyle = '#94a3b8'
         ctx.strokeRect(40, 110, 120, 140)
-        
+
         ctx.fillStyle = '#64748b'
         ctx.font = '12px Arial'
         ctx.fillText('PHOTO', 100, 185)
@@ -360,12 +377,12 @@ const IDCardGenerator = () => {
         // User Details
         ctx.textAlign = 'left'
         ctx.fillStyle = '#1e293b' // slate-800
-        
+
         const drawField = (label, value, y) => {
             ctx.font = 'bold 12px Arial'
             ctx.fillStyle = '#64748b' // slate-500
             ctx.fillText(label.toUpperCase(), 190, y)
-            
+
             ctx.font = 'bold 18px Arial'
             ctx.fillStyle = '#0f172a' // slate-900
             ctx.fillText(value || '---', 190, y + 22)
@@ -374,7 +391,7 @@ const IDCardGenerator = () => {
         drawField('Name', name, 130)
         drawField('State Code', stateCode, 190)
         drawField('Place of Assignment', ppa, 250)
-        
+
         // Footer (Blood Group)
         ctx.fillStyle = '#ef4444' // red-500
         ctx.fillRect(190, 300, 40, 20)
@@ -382,7 +399,7 @@ const IDCardGenerator = () => {
         ctx.font = 'bold 12px Arial'
         ctx.textAlign = 'center'
         ctx.fillText(bloodGroup, 210, 314)
-        
+
         ctx.textAlign = 'left'
         ctx.fillStyle = '#64748b'
         ctx.fillText('Blood Group', 240, 314)
@@ -408,10 +425,10 @@ const IDCardGenerator = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white dark:bg-[#1e1f20] rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm space-y-4">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">Card Details</h2>
-                
+
                 <div>
                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Full Name</label>
-                    <input 
+                    <input
                         value={name} onChange={(e) => setName(e.target.value)}
                         className="w-full px-4 py-2 bg-gray-50 dark:bg-[#131314] rounded-lg border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-green-500 dark:text-white"
                     />
@@ -419,7 +436,7 @@ const IDCardGenerator = () => {
 
                 <div>
                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">State Code</label>
-                    <input 
+                    <input
                         value={stateCode} onChange={(e) => setStateCode(e.target.value)}
                         className="w-full px-4 py-2 bg-gray-50 dark:bg-[#131314] rounded-lg border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-green-500 dark:text-white"
                     />
@@ -427,7 +444,7 @@ const IDCardGenerator = () => {
 
                 <div>
                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">PPA (Place of Assignment)</label>
-                    <input 
+                    <input
                         value={ppa} onChange={(e) => setPpa(e.target.value)}
                         placeholder="e.g. Govt Sec School"
                         className="w-full px-4 py-2 bg-gray-50 dark:bg-[#131314] rounded-lg border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-green-500 dark:text-white"
@@ -436,7 +453,7 @@ const IDCardGenerator = () => {
 
                 <div>
                     <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Blood Group</label>
-                    <select 
+                    <select
                         value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)}
                         className="w-full px-4 py-2 bg-gray-50 dark:bg-[#131314] rounded-lg border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-green-500 dark:text-white"
                     >
@@ -447,15 +464,15 @@ const IDCardGenerator = () => {
 
             <div className="flex flex-col items-center gap-6">
                 <div className="bg-gray-200 dark:bg-gray-800 p-4 rounded-xl shadow-inner">
-                    <canvas 
-                        ref={canvasRef} 
-                        width={600} 
-                        height={378} 
+                    <canvas
+                        ref={canvasRef}
+                        width={600}
+                        height={378}
                         className="w-full max-w-[400px] h-auto rounded-lg shadow-xl bg-white"
                     />
                 </div>
-                
-                <button 
+
+                <button
                     onClick={downloadCard}
                     className="flex items-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-green-900/20 active:scale-[0.98]"
                 >

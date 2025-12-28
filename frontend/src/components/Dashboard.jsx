@@ -418,7 +418,7 @@ const Dashboard = ({ user, onViewChange }) => {
                         </h2>
 
                         <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                            This update highlights key information regarding upcoming NYSC events. Please verify all details on the official portals linked below before taking action.
+                            {selectedNews.content || "This update highlights key information regarding upcoming NYSC events. Please verify all details on the official portals linked below before taking action."}
                         </p>
 
                         <a

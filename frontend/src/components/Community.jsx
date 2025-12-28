@@ -1,6 +1,8 @@
-import { ArrowLeft, ExternalLink, Globe, MessageCircle, Instagram, Facebook, Twitter } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, ExternalLink, Globe, MessageCircle, Instagram, Facebook, Twitter, MapPin } from 'lucide-react'
 
 const Community = ({ onBack }) => {
+    const [selectedState, setSelectedState] = useState('All')
 
     const officialChannels = [
         { name: 'Official Website', url: 'https://www.nysc.org.ng', icon: <Globe size={20} className="text-green-600" /> },
@@ -62,7 +64,26 @@ const Community = ({ onBack }) => {
 
                 {/* State Groups */}
                 <section className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">State WhatsApp/Telegram Groups</h2>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white">State WhatsApp/Telegram Groups</h2>
+                        <div className="relative">
+                            <MapPin size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <select 
+                                value={selectedState}
+                                onChange={(e) => setSelectedState(e.target.value)}
+                                className="pl-10 pr-4 py-2 bg-white dark:bg-[#1e1f20] border border-gray-200 dark:border-gray-800 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-500"
+                            >
+                                <option value="All">All States</option>
+                                <option value="Lagos">Lagos</option>
+                                <option value="Abuja (FCT)">Abuja (FCT)</option>
+                                <option value="Rivers">Rivers</option>
+                                <option value="Kano">Kano</option>
+                                <option value="Oyo">Oyo</option>
+                                <option value="Enugu">Enugu</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="bg-white dark:bg-[#1e1f20] rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
                         <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-[#2c2d2e]/30">
                             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -70,7 +91,9 @@ const Community = ({ onBack }) => {
                             </p>
                         </div>
                         <div className="divide-y divide-gray-100 dark:divide-gray-800">
-                            {stateGroups.map((group, i) => (
+                            {stateGroups
+                                .filter(g => selectedState === 'All' || g.state === selectedState)
+                                .map((group, i) => (
                                 <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-[#2c2d2e] transition-colors">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-xs">
