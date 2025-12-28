@@ -20,11 +20,11 @@ const Dashboard = ({ user, onViewChange }) => {
         else if (hour < 18) setGreeting('Good Afternoon')
         else setGreeting('Good Evening')
 
+        // Fallback if Env Var is missing (Common Vercel issue)
+        const API_URL = import.meta.env.VITE_API_BASE_URL || "https://nysc-bot-api.onrender.com"
+
         const fetchData = async () => {
             try {
-                // Fallback if Env Var is missing (Common Vercel issue)
-                const API_URL = import.meta.env.VITE_API_BASE_URL || "https://nysc-bot-api.onrender.com"
-
                 const [newsRes, timelineRes] = await Promise.all([
                     axios.get(`${API_URL}/api/news`),
                     axios.get(`${API_URL}/api/timeline`) // Auth header handled by context
@@ -37,7 +37,13 @@ const Dashboard = ({ user, onViewChange }) => {
                 setLoading(false)
             }
         }
+
         fetchData()
+
+        // Poll for updates every 30 seconds
+        const intervalId = setInterval(fetchData, 30000)
+
+        return () => clearInterval(intervalId)
     }, [])
 
     const isCorpsMember = user?.role === 'Corps Member';
@@ -165,6 +171,38 @@ const Dashboard = ({ user, onViewChange }) => {
                     </div>
                 </section>
 
+                {/* Auxiliary Widgets for Corps Members */}
+                {isCorpsMember && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{ animationDelay: '0.05s' }}>
+                        {/* Monthly Clearance Status */}
+                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
+                            <div>
+                                <h3 className="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Monthly Clearance</h3>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white">Pending</p>
+                                <p className="text-xs text-orange-500 font-medium mt-1">Due: Jan 5th, 2026</p>
+                            </div>
+                            <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-full text-orange-600 dark:text-orange-400">
+                                <Clock size={24} />
+                            </div>
+                        </div>
+
+                        {/* PPA Details */}
+                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
+                            <div>
+                                <h3 className="text-gray-500 dark:text-gray-400 text-xs uppercase font-bold tracking-wider mb-1">Place of Primary Assignment</h3>
+                                <p className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[180px]">
+                                    {user?.ppa || "Not Assigned"}
+                                </p>
+                                <p className="text-xs text-gray-400 font-medium mt-1">{user?.lga || "LGA Not Set"}</p>
+                            </div>
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-full text-blue-600 dark:text-blue-400">
+                                <BookOpen size={24} />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+
                 {/* Quick Actions & Links */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
                     {/* Action Cards */}
@@ -233,39 +271,6 @@ const Dashboard = ({ user, onViewChange }) => {
                         </div>
                     </div>
                 </div>
-
-                {/* News Feed */}
-                <section className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Latest Updates</h2>
-                        <a href="https://nysc.gov.ng/news-and-events" target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 font-medium hover:underline">View All</a>
-                    </div>
-
-                    <div className="bg-white dark:bg-[#1e1f20] rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden">
-                        {news.length > 0 ? news.map(newsItem => (
-                            <div
-                                key={newsItem.id}
-                                onClick={() => setSelectedNews(newsItem)}
-                                className="block p-5 hover:bg-gray-50 dark:hover:bg-[#2c2d2e] transition-colors cursor-pointer group"
-                            >
-                                <div className="flex justify-between items-start mb-1">
-                                    <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-md ${newsItem.type === 'Mobilization' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                                        newsItem.type === 'Official' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
-                                        }`}>
-                                        {newsItem.type}
-                                    </span>
-                                    <span className="text-xs text-gray-400 font-medium">{newsItem.date}</span>
-                                </div>
-                                <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 group-hover:text-green-600 transition-colors">
-                                    {newsItem.title}
-                                </h3>
-                            </div>
-                        )) : (
-                            <div className="p-8 text-center text-gray-400 text-sm">Loading updates...</div>
-                        )}
-                    </div>
-                </section>
 
                 {/* News Feed */}
                 <section className="animate-slide-up" style={{ animationDelay: '0.2s' }}>

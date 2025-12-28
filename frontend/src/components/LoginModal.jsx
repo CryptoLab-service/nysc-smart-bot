@@ -3,7 +3,7 @@ import { X, Github, Mail } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const LoginModal = ({ isOpen, onClose }) => {
-    const { login } = useAuth()
+    const { login, signup } = useAuth()
     const [step, setStep] = useState('login') // 'login', 'onboarding'
     const [tempAuth, setTempAuth] = useState(null) // store auth provider info before creating profile
 
@@ -15,6 +15,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     const [fullName, setFullName] = useState('')
     const [role, setRole] = useState('PCM') // PCM, Corps Member, Staff
     const [location, setLocation] = useState('')
+    const [stateCode, setStateCode] = useState('')
+    const [lga, setLga] = useState('')
+    const [cdsGroup, setCdsGroup] = useState('')
 
     // Validation State
     const [error, setError] = useState('')
@@ -34,7 +37,7 @@ const LoginModal = ({ isOpen, onClose }) => {
         setStep('onboarding')
     }
 
-    const handleEmailLogin = (e) => {
+    const handleEmailLogin = async (e) => {
         e.preventDefault()
         setError('')
 
@@ -43,38 +46,40 @@ const LoginModal = ({ isOpen, onClose }) => {
             return
         }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters')
-            return
+        const res = await login(email, password)
+        if (res.success) {
+            onClose()
         }
-
-        // SIMULATION: Allow any email
-        const mockUser = {
-            id: "email-" + Math.random().toString(36).substr(2, 9),
-            email: email,
-            provider: 'email',
-        }
-        setTempAuth(mockUser)
-        setStep('onboarding')
     }
 
-    const finishOnboarding = (e) => {
+    const finishOnboarding = async (e) => {
         e.preventDefault()
         if (!fullName) {
             setError('Full Name is required')
             return
         }
-
-        const finalUser = {
-            ...tempAuth,
-            name: fullName,
-            role: role,
-            location: location,
-            createdAt: new Date().toISOString()
+        // If not social login, we need email/password in this step if they weren't collected
+        if (!tempAuth && (!email || !password)) {
+            setError('Email and Password are required')
+            return
         }
 
-        login(finalUser)
-        onClose()
+        const userData = {
+            email: tempAuth ? tempAuth.email : email,
+            password: tempAuth ? 'social-login-placeholder' : password, // In real social auth, we handle this differently
+            name: fullName,
+            role: role,
+            state: location,
+            state_code: stateCode,
+            lga: lga,
+            cds_group: cdsGroup,
+            // provider: tempAuth?.provider
+        }
+
+        const res = await signup(userData)
+        if (res.success) {
+            onClose()
+        }
     }
 
     return (
@@ -159,10 +164,46 @@ const LoginModal = ({ isOpen, onClose }) => {
                                 <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-xl font-medium transition-colors">
                                     Login with Email
                                 </button>
+                                <div className="text-center mt-2">
+                                    <span className="text-sm text-gray-500">Don't have an account? </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setStep('onboarding')}
+                                        className="text-sm text-green-600 font-medium hover:underline"
+                                    >
+                                        Sign Up
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     ) : (
                         <form onSubmit={finishOnboarding} className="flex flex-col gap-4">
+                            {!tempAuth && (
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email *</label>
+                                        <input
+                                            type="email"
+                                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
+                                            placeholder="name@example.com"
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password *</label>
+                                        <input
+                                            type="password"
+                                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
+                                            placeholder="Create a password"
+                                            value={password}
+                                            onChange={e => setPassword(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </>
+                            )}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name *</label>
                                 <input
@@ -189,7 +230,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State / Location (Optional)</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State of Deployment</label>
                                 <input
                                     type="text"
                                     className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
@@ -199,9 +240,56 @@ const LoginModal = ({ isOpen, onClose }) => {
                                 />
                             </div>
 
-                            <div className="pt-2">
+                            {role === 'Corps Member' && (
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State Code</label>
+                                        <input
+                                            type="text"
+                                            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
+                                            placeholder="e.g. LA/24A/1234"
+                                            value={stateCode}
+                                            onChange={e => setStateCode(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">LGA</label>
+                                            <input
+                                                type="text"
+                                                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
+                                                placeholder="e.g. Ikeja"
+                                                value={lga}
+                                                onChange={e => setLga(e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CDS Group</label>
+                                            <input
+                                                type="text"
+                                                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-[#2c2d2e] border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-green-500 dark:text-white transition-all"
+                                                placeholder="e.g. ICT"
+                                                value={cdsGroup}
+                                                onChange={e => setCdsGroup(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="pt-2 flex flex-col gap-2">
                                 <button type="submit" className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 rounded-xl font-bold tracking-wide transition-all shadow-lg shadow-green-900/20 active:scale-95">
-                                    Complete Setup
+                                    {tempAuth ? 'Complete Setup' : 'Create Account'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setStep('login');
+                                        setTempAuth(null);
+                                    }}
+                                    className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                                >
+                                    Back to Login
                                 </button>
                             </div>
                         </form>
