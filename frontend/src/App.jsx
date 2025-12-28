@@ -9,6 +9,7 @@ import ToolsHub from './components/ToolsHub'
 import Community from './components/Community'
 import AdminDashboard from './components/AdminDashboard'
 import Checklist from './components/Checklist'
+import BottomNav from './components/BottomNav'
 import { useAuth } from './context/AuthContext'
 import { Toaster } from 'react-hot-toast'
 import './index.css'
@@ -141,33 +142,43 @@ function App() {
       />
 
       {currentView === 'dashboard' && (
-        <Dashboard
-          user={user}
-          onViewChange={setCurrentView}
-        />
+        <div className="flex-1 h-full pb-16 md:pb-0">
+          <Dashboard
+            user={user}
+            onViewChange={setCurrentView}
+          />
+        </div>
       )}
 
       {currentView === 'resources' && (
-        <ResourceLibrary onBack={() => setCurrentView('dashboard')} />
+        <div className="flex-1 h-full pb-16 md:pb-0">
+          <ResourceLibrary onBack={() => setCurrentView('dashboard')} />
+        </div>
       )}
 
       {currentView === 'tools' && (
-        <ToolsHub onBack={() => setCurrentView('dashboard')} />
+        <div className="flex-1 h-full pb-16 md:pb-0">
+          <ToolsHub onBack={() => setCurrentView('dashboard')} />
+        </div>
       )}
 
       {currentView === 'community' && (
-        <Community onBack={() => setCurrentView('dashboard')} />
+        <div className="flex-1 h-full pb-16 md:pb-0">
+          <Community onBack={() => setCurrentView('dashboard')} />
+        </div>
       )}
 
       {currentView === 'checklist' && (
-        <Checklist onBack={() => setCurrentView('tools')} />
+        <div className="flex-1 h-full pb-16 md:pb-0">
+          <Checklist onBack={() => setCurrentView('tools')} />
+        </div>
       )}
 
       {currentView === 'admin' && (
         <AdminDashboard onViewChange={setCurrentView} />
       )}
 
-      <div className={currentView === 'chat' ? 'flex-1 h-full' : 'hidden'}>
+      <div className={currentView === 'chat' ? 'flex-1 h-full pb-16 md:pb-0' : 'hidden'}>
         <ChatInterface
           isSidebarOpen={isSidebarOpen}
           onOpenSidebar={() => setIsSidebarOpen(true)}
@@ -181,6 +192,8 @@ function App() {
           onBack={() => setCurrentView('dashboard')}
         />
       </div>
+
+      <BottomNav currentView={currentView} setView={setCurrentView} />
       <Toaster position="top-right" />
     </div>
   )
