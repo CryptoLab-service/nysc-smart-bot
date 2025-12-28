@@ -160,7 +160,6 @@ const AdminDashboard = ({ onViewChange }) => {
                             </button>
                         </div>
                     </form>
-                    </form>
                 </div>
 
                 {/* Resource Management */}
