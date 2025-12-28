@@ -135,7 +135,7 @@ const Dashboard = ({ user, onViewChange }) => {
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-bold flex items-center gap-2">
                                 <Activity className="text-green-200" />
-                                Service Timeline
+                                {isCorpsMember ? "Service Timeline" : "Mobilization Tracker"}
                             </h2>
                             <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
                                 {displayTitle}
@@ -146,10 +146,18 @@ const Dashboard = ({ user, onViewChange }) => {
                         <div className="mb-2">
                             <div className="flex justify-between text-xs text-green-100 mb-1 font-medium">
                                 <span>Progress</span>
-                                <span>{isCorpsMember ? "35% (Month 4 of 12)" : "10% (Registration)"}</span>
+                                <span>{isCorpsMember ? "35% (Month 4 of 12)" : "60% (Biometrics Done)"}</span>
                             </div>
-                            <div className="bg-black/20 rounded-full h-3 overflow-hidden backdrop-blur-sm">
-                                <div className="h-full bg-white/90 rounded-full shadow-lg transition-all duration-1000" style={{ width: isCorpsMember ? '35%' : '10%' }}></div>
+                            <div className="bg-black/20 rounded-full h-3 overflow-hidden backdrop-blur-sm flex">
+                                {/* PCM Milestones: Senate(25%) -> Registered(50%) -> Biometrics(75%) -> Camp(100%) */}
+                                <div className="h-full bg-white/90 rounded-full shadow-lg transition-all duration-1000" style={{ width: isCorpsMember ? '35%' : '60%' }}></div>
+                            </div>
+                            <div className="flex justify-between mt-2 text-[10px] text-green-200 font-medium opacity-80 uppercase tracking-widest">
+                                {isCorpsMember ? (
+                                    <><span>Camp</span><span>PPA</span><span>CDS</span><span>POP</span></>
+                                ) : (
+                                    <><span>Senate</span><span>Region</span><span>Biometric</span><span>Camp</span></>
+                                )}
                             </div>
                         </div>
 
@@ -178,20 +186,20 @@ const Dashboard = ({ user, onViewChange }) => {
                             ) : (
                                 <>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm">
-                                        <span className="block text-3xl font-bold mb-1">{timeline?.days_to_camp ?? '--'}</span>
-                                        <span className="text-xs text-green-100 uppercase tracking-wider">Days to Camp</span>
+                                        <span className="block text-2xl font-bold mb-1">Pending</span>
+                                        <span className="text-xs text-green-100 uppercase tracking-wider">Camp Status</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm">
-                                        <span className="block text-3xl font-bold mb-1">{timeline?.registration_status === "Open" ? "ON" : "--"}</span>
-                                        <span className="text-xs text-green-100 uppercase tracking-wider">Registration</span>
+                                        <span className="block text-2xl font-bold mb-1">{timeline?.registration_status === "Open" ? "OPEN" : "CLOSED"}</span>
+                                        <span className="text-xs text-green-100 uppercase tracking-wider">Portal</span>
                                     </div>
                                     <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-80">
-                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.state_code || '--'}</span>
-                                        <span className="text-xs text-green-100 uppercase tracking-wider">Callup No</span>
-                                    </div>
-                                    <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-80">
-                                        <span className="block text-3xl font-bold mb-1">--</span>
+                                        <span className="block text-xl font-bold mb-1 pt-1 truncate">{user?.state_code ? "Validated" : "Pending"}</span>
                                         <span className="text-xs text-green-100 uppercase tracking-wider">Senate List</span>
+                                    </div>
+                                    <div className="bg-black/20 rounded-2xl p-4 backdrop-blur-sm opacity-80 ring-2 ring-white/30">
+                                        <span className="block text-md font-bold mb-1 pt-2">Upload Slip</span>
+                                        <span className="text-xs text-green-100 uppercase tracking-wider">Next Step</span>
                                     </div>
                                 </>
                             )}
@@ -282,15 +290,15 @@ const Dashboard = ({ user, onViewChange }) => {
                         {/* PCM CARDS */}
                         {(user?.role === 'PCM' || !user?.role) && (
                             <>
-                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                <button onClick={() => setIsBiometricOpen(true)} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer text-left group">
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl text-indigo-600 dark:text-indigo-400">
-                                            <UserIcon size={24} />
+                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                                            <Fingerprint size={24} />
                                         </div>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Registration Guide</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Step-by-step for new PCMs.</p>
-                                </div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Biometric Verification</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Upload stamped slip.</p>
+                                </button>
 
                                 <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
                                     <div className="flex items-start justify-between mb-4">
