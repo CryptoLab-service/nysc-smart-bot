@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Calendar, MessageSquare, BookOpen, CheckCircle, Clock, LogOut, Settings, User as UserIcon, X, ExternalLink, Bell, Activity } from 'lucide-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
@@ -17,6 +17,7 @@ const Dashboard = ({ user, onViewChange }) => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [isClearanceOpen, setIsClearanceOpen] = useState(false)
     const [selectedNews, setSelectedNews] = useState(null) // For News Modal
+    const prevNewsLengthRef = useRef(0)
     const { logout } = useAuth()
 
     useEffect(() => {
@@ -34,7 +35,22 @@ const Dashboard = ({ user, onViewChange }) => {
                     axios.get(`${API_URL}/api/news`),
                     axios.get(`${API_URL}/api/timeline`) // Auth header handled by context
                 ])
-                setNews(newsRes.data)
+
+                // Smart Notification Logic
+                const newNews = newsRes.data
+                if (prevNewsLengthRef.current > 0 && newNews.length > prevNewsLengthRef.current) {
+                    toast.success('🔔 New Official Update Received!', {
+                        duration: 5000,
+                        position: 'top-right',
+                        style: {
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    })
+                }
+                prevNewsLengthRef.current = newNews.length
+
+                setNews(newNews)
                 setTimeline(timelineRes.data)
             } catch (error) {
                 console.error("Failed to fetch dashboard data", error)
