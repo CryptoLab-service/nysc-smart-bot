@@ -32,3 +32,16 @@ class News(Base):
     type = Column(String) # Mobilization, Official, Guide
     url = Column(String, nullable=True)
 
+class Clearance(Base):
+    __tablename__ = "clearances"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True) # ForeignKey relation manual for simplicity or add ForeignKey
+    user_name = Column(String) # Denormalized for easy display
+    state_code = Column(String)
+    month = Column(String) # e.g. "January 2026"
+    date_submitted = Column(String)
+    status = Column(String, default="Pending") # Pending, Approved, Rejected
+    file_url = Column(String, nullable=True) # URL to uploaded letter
+    official_comment = Column(String, nullable=True)
+

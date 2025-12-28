@@ -1,0 +1,97 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import get_db
+import models
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import datetime
+from auth import get_current_user
+
+router = APIRouter(
+    prefix="/clearance",
+    tags=["clearance"]
+)
+
+# Pydantic Schemas
+class ClearanceRequest(BaseModel):
+    month: str
+    file_url: Optional[str] = None
+
+class ClearanceAction(BaseModel):
+    status: str # "Approved" or "Rejected"
+    comment: Optional[str] = None
+
+class ClearanceOut(BaseModel):
+    id: int
+    user_name: str
+    state_code: str
+    month: str
+    date_submitted: str
+    status: str
+    file_url: Optional[str]
+    official_comment: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+# --- Endpoints ---
+
+# 1. CM: Submit Request
+@router.post("/request")
+async def request_clearance(req: ClearanceRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if current_user.role != "Corps Member":
+        raise HTTPException(status_code=403, detail="Only Corps Members can request clearance")
+
+    # Check for duplicate
+    existing = db.query(models.Clearance).filter(
+        models.Clearance.user_id == current_user.id,
+        models.Clearance.month == req.month
+    ).first()
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Clearance request already submitted for this month")
+
+    new_request = models.Clearance(
+        user_id=current_user.id,
+        user_name=current_user.name,
+        state_code=current_user.state_code,
+        month=req.month,
+        date_submitted=datetime.now().strftime("%Y-%m-%d %H:%M"),
+        status="Pending",
+        file_url=req.file_url
+    )
+    
+    db.add(new_request)
+    db.commit()
+    db.refresh(new_request)
+    return {"message": "Clearance submitted successfully", "id": new_request.id}
+
+# 2. CM: View History
+@router.get("/my-history", response_model=List[ClearanceOut])
+async def get_my_history(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    return db.query(models.Clearance).filter(models.Clearance.user_id == current_user.id).all()
+
+# 3. Official: View Pending Requests
+@router.get("/pending", response_model=List[ClearanceOut])
+async def get_pending_requests(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if current_user.role not in ["Official", "Admin"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # In a real app, filter by Official's LGA/State. For MVP -> All pending.
+    return db.query(models.Clearance).filter(models.Clearance.status == "Pending").all()
+
+# 4. Official: Approve/Reject
+@router.put("/{request_id}/action")
+async def action_clearance(request_id: int, action: ClearanceAction, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    if current_user.role not in ["Official", "Admin"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    clearance = db.query(models.Clearance).filter(models.Clearance.id == request_id).first()
+    if not clearance:
+        raise HTTPException(status_code=404, detail="Clearance request not found")
+    
+    clearance.status = action.status
+    clearance.official_comment = action.comment
+    db.commit()
+    
+    return {"message": f"Clearance {action.status}"}
