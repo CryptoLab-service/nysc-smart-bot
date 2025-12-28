@@ -31,7 +31,7 @@ app.add_middleware(
 # --- SETUP TOOLS ---
 from database import engine, Base, SessionLocal
 import models
-from routers import auth, data, admin, clearance
+from routers import auth, data, admin, clearance, resources
 from fastapi.staticfiles import StaticFiles
 from auth import get_password_hash
 
@@ -113,6 +113,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth.router)
 app.include_router(data.router)
 app.include_router(admin.router)
+app.include_router(resources.router)
 
 DB_PATH = "chroma_db"
 embedding_function = None

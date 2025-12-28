@@ -45,3 +45,13 @@ class Clearance(Base):
     file_url = Column(String, nullable=True) # URL to uploaded letter
     official_comment = Column(String, nullable=True)
 
+class Resource(Base):
+    __tablename__ = "resources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    category = Column(String) # e.g. "Forms", "Handbooks", "Guides"
+    url = Column(String)
+    date_added = Column(String)
+    is_official = Column(String, default="true") # "true" means uploaded by admin
+
