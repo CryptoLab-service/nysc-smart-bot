@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { CheckSquare, Calendar, Users, ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { CheckSquare, Calendar, Users, ArrowLeft, Plus, Trash2, Save, Download, CreditCard } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const ToolsHub = ({ onBack }) => {
     const [activeTool, setActiveTool] = useState('checklist') // 'checklist', 'clearance', 'cds'
@@ -27,8 +28,8 @@ const ToolsHub = ({ onBack }) => {
                     <button
                         onClick={() => setActiveTool('checklist')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'checklist'
-                                ? 'bg-green-600 text-white shadow-md'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
+                            ? 'bg-green-600 text-white shadow-md'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
                             }`}
                     >
                         <CheckSquare size={18} />
@@ -37,8 +38,8 @@ const ToolsHub = ({ onBack }) => {
                     <button
                         onClick={() => setActiveTool('clearance')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'clearance'
-                                ? 'bg-green-600 text-white shadow-md'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
+                            ? 'bg-green-600 text-white shadow-md'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
                             }`}
                     >
                         <Calendar size={18} />
@@ -47,8 +48,8 @@ const ToolsHub = ({ onBack }) => {
                     <button
                         onClick={() => setActiveTool('cds')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTool === 'cds'
-                                ? 'bg-green-600 text-white shadow-md'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
+                            ? 'bg-green-600 text-white shadow-md'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2c2d2e]'
                             }`}
                     >
                         <Users size={18} />
@@ -61,6 +62,7 @@ const ToolsHub = ({ onBack }) => {
                     {activeTool === 'checklist' && <CampChecklist />}
                     {activeTool === 'clearance' && <ClearanceTracker />}
                     {activeTool === 'cds' && <CDSManager />}
+                    {activeTool === 'id-card' && <IDCardGenerator />}
                 </div>
 
             </div>
@@ -108,8 +110,8 @@ const CampChecklist = () => {
             <div className="space-y-3">
                 {items.map(item => (
                     <label key={item.id} className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer ${item.checked
-                            ? 'bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30'
-                            : 'bg-white dark:bg-[#1e1f20] border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                        ? 'bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30'
+                        : 'bg-white dark:bg-[#1e1f20] border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                         }`}>
                         <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${item.checked ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 dark:border-gray-500'
                             }`}>
