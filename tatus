@@ -1,0 +1,11 @@
+[33mcommit 09cc7004117495f24b1816e640ea0ddc39aa11b2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: oluwalowo john <oluwalowojohn@.com>
+Date:   Sun Dec 28 13:04:19 2025 +0100
+
+    Fix typo in seed_users: ids_group -> cds_group
+
+[33mcommit e2ae6e079e5ba5a32e0a82a9d49225a7a8eb0fa5[m
+Author: oluwalowo john <oluwalowojohn@.com>
+Date:   Sun Dec 28 12:54:37 2025 +0100
+
+    Implement Multi-Role Dashboard System (5-Card Layout & Admin Seeding)

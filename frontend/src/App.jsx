@@ -15,8 +15,21 @@ import './index.css'
 
 function App() {
   const { user, loading } = useAuth()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768)
   const [currentView, setCurrentView] = useState('dashboard') // 'dashboard', 'chat', 'resources'
+
+  // Handle Resize for Sidebar
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true)
+      } else {
+        setIsSidebarOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   const [theme, setTheme] = useState('light')
 
   const [question, setQuestion] = useState('')
@@ -57,30 +70,23 @@ function App() {
     setQuestion('')
     setIsLoading(true)
 
-    const getMockResponse = (q) => {
-      const lower = q.toLowerCase()
-      if (lower.includes('camp')) return "The next NYSC Orientation Camp is tentatively scheduled for next month. Please check the official NYSC dashboard for your Call-up Letter."
-      if (lower.includes('ppa')) return "To change your PPA, you need a rejection letter from your current place of assignment and a request letter from the new organization."
-      if (lower.includes('allowee')) return "The current federal allowance is ₦77,000 monthly."
-      return "I'm currently in simulation mode because the server is unreachable, but I can tell you that NYSC service year is a mandatory one-year program for Nigerian graduates."
-    }
-
     try {
       // Attempt API Call
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ask`, {
         question: input
-      }, { timeout: 30000 }) // 30s timeout for Render cold start
+      }, { timeout: 45000 }) // 45s timeout
 
       setMessages(prev => [...prev, { type: 'bot', text: response.data.answer }])
     } catch (error) {
-      console.warn("API Failed/Slow, using Mock Response", error)
-      // Fallback to Mock
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          type: 'bot',
-          text: getMockResponse(input)
-        }])
-      }, 1000)
+      console.warn("Chat API Error", error)
+      const errorMessage = error.response?.status === 503
+        ? "I am currently undergoing maintenance. Please check back shortly."
+        : "I'm having trouble connecting to the server. Please check your internet connection."
+
+      setMessages(prev => [...prev, {
+        type: 'bot',
+        text: errorMessage
+      }])
     } finally {
       setIsLoading(false)
     }
