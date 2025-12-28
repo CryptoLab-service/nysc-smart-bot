@@ -16,10 +16,10 @@ const Sidebar = ({ isOpen, onClose, onNewChat, theme, toggleTheme, user, onLogin
             {/* Sidebar Container */}
             <div className={`
         fixed md:relative z-30
-        h-full bg-gray-50 dark:bg-[#1e1f20] 
+        h-full bg-white/80 dark:bg-[#1e1f20]/80 backdrop-blur-xl
         border-r border-gray-200 dark:border-gray-800
         transition-all duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0 md:w-0 md:overflow-hidden'}
+        ${isOpen ? 'translate-x-0 w-72 shadow-2xl md:shadow-none' : '-translate-x-full md:translate-x-0 md:w-0 md:overflow-hidden'}
         flex flex-col
       `}>
 

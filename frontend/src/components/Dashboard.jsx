@@ -53,7 +53,7 @@ const Dashboard = ({ user, onViewChange }) => {
     const displayTitle = isCorpsMember ? 'Corps Member Display' : 'Prospective Corps Member Display';
 
     return (
-        <div className="flex-1 h-full overflow-y-auto bg-gray-50 dark:bg-[#131314] p-6 transition-colors duration-300">
+        <div className="flex-1 h-full overflow-y-auto bg-gray-50 dark:bg-[#131314] premium-bg p-6 transition-colors duration-300">
             <div className="max-w-5xl mx-auto space-y-8 pb-20">
 
                 {/* Header Section */}
@@ -180,7 +180,7 @@ const Dashboard = ({ user, onViewChange }) => {
                     {/* Row 1: Shared Modules */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* 1. Assistance */}
-                        <button onClick={() => onViewChange('chat')} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex flex-col gap-4 group">
+                        <button onClick={() => onViewChange('chat')} className="glass-card p-6 rounded-3xl text-left flex flex-col gap-4 group">
                             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl w-fit text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                                 <MessageSquare size={24} />
                             </div>
@@ -191,7 +191,7 @@ const Dashboard = ({ user, onViewChange }) => {
                         </button>
 
                         {/* 2. Resource Library */}
-                        <button onClick={() => onViewChange('resources')} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all text-left flex flex-col gap-4 group">
+                        <button onClick={() => onViewChange('resources')} className="glass-card p-6 rounded-3xl text-left flex flex-col gap-4 group">
                             <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-2xl w-fit text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
                                 <BookOpen size={24} />
                             </div>
@@ -202,7 +202,7 @@ const Dashboard = ({ user, onViewChange }) => {
                         </button>
 
                         {/* 3. Quick Links (Modal/Dropdown substitute) */}
-                        <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col gap-4 relative overflow-hidden">
+                        <div className="glass-card p-6 rounded-3xl flex flex-col gap-4 relative overflow-hidden">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl text-gray-600 dark:text-gray-300">
                                     <ExternalLink size={24} />
