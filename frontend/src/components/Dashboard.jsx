@@ -432,6 +432,13 @@ const Dashboard = ({ user, onViewChange }) => {
                     </div>
                 </div>
             )}
+            {isClearanceOpen && isCorpsMember && (
+                <ClearanceRequestModal isOpen={isClearanceOpen} onClose={() => setIsClearanceOpen(false)} />
+            )}
+
+            {isBiometricOpen && (
+                <BiometricUploadModal isOpen={isBiometricOpen} onClose={() => setIsBiometricOpen(false)} />
+            )}
         </motion.div>
     )
 }
