@@ -1,113 +1,92 @@
 # 🇳🇬 NYSC Smart Companion (AI-Powered)
 
-![Build Status](https://img.shields.io/badge/Status-Live-green) ![License](https://img.shields.io/badge/License-MIT-blue) ![React](https://img.shields.io/badge/Frontend-React_19-cyan) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-teal)
+![Build Status](https://img.shields.io/badge/Status-Live-green?style=for-the-badge) ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge) ![React](https://img.shields.io/badge/Frontend-React_19-cyan?style=for-the-badge) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-teal?style=for-the-badge)
 
-A premium, AI-driven assistant designed to guide Nigerian Youth Corps Members through their Service Year. From intelligent query resolution to automated clearance workflows, **NYSC Smart Companion** is the ultimate digital toolkit.
+> **"The Ultimate Digital Survival Kit for Every Nigerian Corps Member."**
+
+**NYSC Smart Companion** is not just a bot; it's a revolutionary, AI-driven assistant designed to transform the NYSC experience. We bridge the gap between confusion and clarity, ensuring every PCM and Corps Member has instant access to accurate information, automated tools, and a supportive community.
 
 ---
 
 ## ⚡ Quick Links
 - **🌐 Live App**: [https://nysc-smart-bot.vercel.app](https://nysc-smart-bot.vercel.app)
 - **🔌 API Documentation**: [https://nysc-bot-api.onrender.com/docs](https://nysc-bot-api.onrender.com/docs)
-- **📱 Telegram Bot**: *(Available via separate webhook)*
+- **📱 Telegram Bot**: *(t.me/@nyscsmartbot)*
 
 ---
 
 ## 🏗️ System Architecture
 
+A robust, scalable architecture powered by modern tech stacks to ensure 99.9% uptime and real-time responsiveness.
+
 ```mermaid
 graph TD
-    User([User]) <--> Client["React Frontend (Vite)"]
-    Client <--> API[FastAPI Backend]
+    User([User Device]) -->|HTTPS| Frontend["⚛️ React Frontend (Vite + PWA)"]
     
-    subgraph "Backend Services"
-        API <--> Auth["Auth Service (JWT/Bcrypt)"]
-        API <--> AI[LangChain AI Agent]
-        API <--> DB[("SQLite/Postgres Database")]
-        API <--> Scheduler["APScheduler (News Fetcher)"]
+    subgraph "Frontend Layer"
+        Frontend -->|State| Context["Auth & Data Context"]
+        Frontend -->|UI| Components["Glassmorphism UI Components"]
     end
     
-    subgraph "External Integrations"
-        AI <--> Chroma["ChromaDB Vector Store"]
-        AI <--> OpenAI["OpenAI/Gemini API"]
-        AI <--> Tavily["Tavily Search API"]
+    Frontend <-->|REST API| LoadBalancer["🌐 Load Balancer / Proxy"]
+    LoadBalancer <-->|JSON| Backend["🐍 FastAPI Backend Server"]
+    
+    subgraph "Backend Core"
+        Backend -->|Auth| Security["JWT Authentication & RBAC"]
+        Backend -->|Logic| Routers["Service Routers (Admin, Clearance, News)"]
+        Backend -->|Tasks| Scheduler["⏱️ APScheduler (Background Jobs)"]
+    end
+    
+    subgraph "Data Persistence"
+        Backend <-->|ORM| DB[("🐘 PostgreSQL / SQLite")]
+        Backend <-->|Files| Cloud["☁️ Cloudinary Storage"]
+    end
+    
+    subgraph "AI Intelligence Engine"
+        Backend <-->|Query| LangChain["🦜🔗 LangChain Agent"]
+        LangChain <-->|Retrieval| VectorDB["📚 ChromaDB (Internal Knowledge)"]
+        LangChain <-->|Inference| LLM["🤖 OpenAI / Gemini Pro"]
+        LangChain <-->|Search| WebSearch["🕷️ Tavily Search API (Real-Time News)"]
     end
 ```
 
 ---
 
-## ✨ Key Features
+## ✨ Features That Wow
 
-### 🧠 Hybrid AI Core
-- **RAG + Real-Time Web Search**: Combines official NYSC Bye-Laws (Vector Store) with live news from the web (Tavily) to answer questions like *"When is 2025 Batch A streaming?"* accurately.
-- **Context-Aware**: Understands the user's state (PCM, Serving, Official) to tailor responses.
+### 🧠 **Hybrid AI Core**
+- **RAG + Real-Time Web Search**: Combines official NYSC Bye-Laws (Vector Store) with **live web search** to answer questions like *"Is the 2025 Senate List out?"* with pinpoint accuracy.
+- **Context-Aware**: It knows who you are. The AItailors responses differently for a PCM vs. a Serving Corps Member.
 
-### 🎨 Premium UI/UX
-- **Glassmorphism Design**: Modern, frosted-glass interface with smooth framer-motion animations.
-- **Mobile-First**: Dedicated Bottom Navigation Bar for mobile users, mimicking a native app experience.
-- **Tools Hub**: Features a client-side **ID Card Generator** (HTML5 Canvas) and Monthly Clearance Tracker.
+### 🎨 **Visual Excellence**
+- **Glassmorphism Design**: A stunning, modern interface featuring frosted glass cards, vibrant gradients, and smooth **Framer Motion** animations.
+- **Mobile-First Experience**: Designed like a native app with a bottom navigation bar, touch-optimized controls, and responsive layouts.
 
-### 🔐 Secure Role Management
-- **Multi-Role Dashboards**:
-    - **PCMs**: Mobilization timeline, Packing Checklists.
-    - **Corps Members**: Clearance requests, PPA details.
-    - **Admins**: Content Management Systems (CMS) for posting News and uploading Resources.
+### 🔐 **Secure & Functional**
+- **Role-Based Dashboards**:
+    *   **PCMs**: Track Mobilization status, view Orientation Checklists, and get "Next Step" guidance.
+    *   **Corps Members**: Manage Monthly Clearance, PPA details, and CDS attendance.
+- **Real-Time Notifications**: Smart toast notifications alert you instantly when new news drops.
 
-### 🛠️ Automated Operations
-- **News Aggregator**: A background scheduler fetches fresh NYSC news every 6 hours automatically.
-- **Resource Library**: Dynamic repository for downloadable official forms and guides.
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- Python 3.10+
-- Git
-
-### 1. Installation
-Clone the repository:
-```bash
-git clone https://github.com/CryptoLab-service/nysc-smart-bot.git
-cd nysc-bot
-```
-
-### 2. Backend Setup
-```bash
-cd backend
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# Mac/Linux
-source venv/bin/activate
-
-pip install -r requirements.txt
-```
-**Configure Environment**: Create a `.env` file in `backend/`:
-```env
-OPENAI_API_KEY=your_key
-GEMINI_API_KEY=your_key
-TAVILY_API_KEY=your_key
-SECRET_KEY=super_secret
-DATABASE_URL=sqlite:///./nysc_bot.db
-```
-Start Server:
-```bash
-uvicorn main:app --reload
-```
-
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### 🛠️ **Power Tools**
+- **ID Card Generator**: Instantly generate a preview of your NYSC ID card.
+- **Biometric Upload**: Seamlessly upload and track your biometric verification slips.
+- **Resource Library**: One-click access to official PDF guides and forms.
 
 ---
 
-## 🤝 Contribution
-We welcome contributions! Please see `CONTRIBUTING.md` for details on how to submit Pull Requests.
+## ☕ Support the Project
 
-## 📄 License
-This project is open-sourced under the MIT License.
+Building the future of NYSC digital services takes caffeine and code! If you find this project helpful, consider supporting the development.
+
+<a href="https://www.buymeacoffee.com/yourusername" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+## 📞 Contact
+For inquiries, bug reports, or feature requests:
+- **Email**: hello@CryptoLab-service.com
+- **Twitter**: [@CryptoLab](https://twitter.com)
+
+---
+
+> **Made with ❤️ for Nigerian Corpers.**  
+> *Service and Humility.*
