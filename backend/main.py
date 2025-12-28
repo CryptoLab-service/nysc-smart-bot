@@ -11,7 +11,10 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
 from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage
 from tavily import TavilyClient
+from apscheduler.schedulers.background import BackgroundScheduler
+from services.news_service import fetch_and_store_news
 
 load_dotenv()
 
@@ -250,8 +253,16 @@ def home():
     return {"message": "NYSC AI is Live (Fine-Tuned)!"}
 
 @app.on_event("startup")
+@app.on_event("startup")
 async def startup_event():
     seed_users()
+    
+    # Start Background Jobs
+    scheduler = BackgroundScheduler()
+    # Run immediately on startup for demo purposes, then every 4 hours
+    scheduler.add_job(fetch_and_store_news, 'interval', hours=4, next_run_time=datetime.datetime.now())
+    scheduler.start()
+
     print("\n" + "="*50)
     print(" NYSC SMART BOT BACKEND IS RUNNING")
     print("="*50)
