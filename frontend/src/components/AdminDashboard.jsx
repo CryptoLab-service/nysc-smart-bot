@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Users, Activity, Shield, LogOut } from 'lucide-react'
+import { Users, Activity, Shield, LogOut, FilePlus } from 'lucide-react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
@@ -168,7 +168,7 @@ const AdminDashboard = ({ onViewChange }) => {
                         <h2 className="text-lg font-bold text-white">Resource Library</h2>
                         <p className="text-gray-400 text-sm">Upload new guides, forms, or timetables.</p>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setIsResourceModalOpen(true)}
                         className="flex items-center gap-2 px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors"
                     >
@@ -216,10 +216,10 @@ const AdminDashboard = ({ onViewChange }) => {
                 </div>
 
             </div>
-            
-            <AddResourceModal 
-                isOpen={isResourceModalOpen} 
-                onClose={() => setIsResourceModalOpen(false)} 
+
+            <AddResourceModal
+                isOpen={isResourceModalOpen}
+                onClose={() => setIsResourceModalOpen(false)}
             />
         </div >
     )

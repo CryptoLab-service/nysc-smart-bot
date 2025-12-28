@@ -18,6 +18,13 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768)
   const [currentView, setCurrentView] = useState('dashboard') // 'dashboard', 'chat', 'resources'
 
+  // Auto-redirect Admin
+  useEffect(() => {
+    if (user?.role === 'Admin' || user?.email === 'admin@nysc.gov.ng') {
+      setCurrentView('admin')
+    }
+  }, [user])
+
   // Handle Resize for Sidebar
   useEffect(() => {
     const handleResize = () => {
@@ -107,11 +114,7 @@ function App() {
   }
 
   // Auto-redirect Admin
-  useEffect(() => {
-    if (user?.role === 'Admin' || user?.email === 'admin@nysc.gov.ng') {
-      setCurrentView('admin')
-    }
-  }, [user])
+
 
   // Logged In -> Show Dashboard
   return (

@@ -1,12 +1,12 @@
-import { ArrowLeft, ExternalLink, Globe, MessageCircle } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Globe, MessageCircle, Instagram, Facebook, Twitter } from 'lucide-react'
 
 const Community = ({ onBack }) => {
 
     const officialChannels = [
         { name: 'Official Website', url: 'https://www.nysc.org.ng', icon: <Globe size={20} className="text-green-600" /> },
-        { name: 'NYSC Twitter (X)', url: 'https://twitter.com/officialnyscng', icon: <ExternalLink size={20} className="text-black dark:text-white" /> },
-        { name: 'NYSC Instagram', url: 'https://instagram.com/officialnyscng', icon: <ExternalLink size={20} className="text-pink-600" /> },
-        { name: 'Facebook Page', url: 'https://facebook.com/officialnysc', icon: <ExternalLink size={20} className="text-blue-600" /> },
+        { name: 'NYSC Twitter (X)', url: 'https://twitter.com/officialnyscng', icon: <Twitter size={20} className="text-black dark:text-white" /> },
+        { name: 'NYSC Instagram', url: 'https://instagram.com/officialnyscng', icon: <Instagram size={20} className="text-pink-600" /> },
+        { name: 'Facebook Page', url: 'https://facebook.com/officialnysc', icon: <Facebook size={20} className="text-blue-600" /> },
     ]
 
     const stateGroups = [
