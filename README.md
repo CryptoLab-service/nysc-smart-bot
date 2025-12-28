@@ -17,20 +17,20 @@ A premium, AI-driven assistant designed to guide Nigerian Youth Corps Members th
 
 ```mermaid
 graph TD
-    User([User]) <--> Client[React Frontend (Vite)]
+    User([User]) <--> Client["React Frontend (Vite)"]
     Client <--> API[FastAPI Backend]
     
     subgraph "Backend Services"
-        API <--> Auth[Auth Service (JWT/Bcrypt)]
+        API <--> Auth["Auth Service (JWT/Bcrypt)"]
         API <--> AI[LangChain AI Agent]
-        API <--> DB[(SQLite/Postgres Database)]
-        API <--> Scheduler[APScheduler (News Fetcher)]
+        API <--> DB[("SQLite/Postgres Database")]
+        API <--> Scheduler["APScheduler (News Fetcher)"]
     end
     
     subgraph "External Integrations"
-        AI <--> Chroma[ChromaDB Vector Store]
-        AI <--> OpenAI[OpenAI/Gemini API]
-        AI <--> Tavily[Tavily Search API]
+        AI <--> Chroma["ChromaDB Vector Store"]
+        AI <--> OpenAI["OpenAI/Gemini API"]
+        AI <--> Tavily["Tavily Search API"]
     end
 ```
 
