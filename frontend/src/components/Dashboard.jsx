@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Calendar, MessageSquare, BookOpen, CheckCircle, Clock, LogOut, Settings, User as UserIcon, X, ExternalLink, Bell, Activity } from 'lucide-react'
+import { motion } from 'framer-motion'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import SettingsModal from './SettingsModal'
 import ClearanceRequestModal from './ClearanceRequestModal'
 import OfficialClearanceDashboard from './OfficialClearanceDashboard'
+import { DashboardSkeleton } from './Skeleton'
 
 const Dashboard = ({ user, onViewChange }) => {
     const [greeting, setGreeting] = useState('')
@@ -52,8 +54,15 @@ const Dashboard = ({ user, onViewChange }) => {
     const isCorpsMember = user?.role === 'Corps Member';
     const displayTitle = isCorpsMember ? 'Corps Member Display' : 'Prospective Corps Member Display';
 
+    if (loading) return <div className="p-6 h-full premium-bg"><DashboardSkeleton /></div>
+
     return (
-        <div className="flex-1 h-full overflow-y-auto bg-gray-50 dark:bg-[#131314] premium-bg p-6 transition-colors duration-300">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex-1 h-full overflow-y-auto bg-gray-50 dark:bg-[#131314] premium-bg p-6 transition-colors duration-300"
+        >
             <div className="max-w-5xl mx-auto space-y-8 pb-20">
 
                 {/* Header Section */}
@@ -399,7 +408,7 @@ const Dashboard = ({ user, onViewChange }) => {
                     </div>
                 </div>
             )}
-        </div>
+        </motion.div>
     )
 }
 
