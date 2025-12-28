@@ -29,17 +29,20 @@ const ClearanceRequestModal = ({ isOpen, onClose }) => {
 
         setUploading(true)
 
-        // Mock File Upload (In real app, upload to S3/Cloudinary first)
-        // For MVP, we'll pretend the file URL is just the file name
-        // because we don't have a real file storage backend set up yet.
-        const mockFileUrl = `https://nysc-storage.s3.amazonaws.com/clearance/${user.id}/${file.name}`
+        // Create FormData
+        const formData = new FormData()
+        formData.append('month', month)
+        if (file) {
+            formData.append('file', file)
+        }
 
         try {
             const API_URL = import.meta.env.VITE_API_BASE_URL || "https://nysc-bot-api.onrender.com"
 
-            await axios.post(`${API_URL}/clearance/request`, {
-                month: month,
-                file_url: mockFileUrl
+            await axios.post(`${API_URL}/clearance/request`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
 
             toast.success("Clearance request submitted successfully!")
