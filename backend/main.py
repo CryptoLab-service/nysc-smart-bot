@@ -75,7 +75,7 @@ def seed_users():
                 state="Lagos",
                 state_code="LA/24A/1234",
                 lga="Ikeja",
-                cds_group="ICT",
+                cds_group="ICT", # Fixed typo
                 ppa="Lagos State Secretariat"
             ))
 
