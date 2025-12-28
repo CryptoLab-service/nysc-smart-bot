@@ -160,6 +160,22 @@ const AdminDashboard = ({ onViewChange }) => {
                             </button>
                         </div>
                     </form>
+                    </form>
+                </div>
+
+                {/* Resource Management */}
+                <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold text-white">Resource Library</h2>
+                        <p className="text-gray-400 text-sm">Upload new guides, forms, or timetables.</p>
+                    </div>
+                    <button 
+                        onClick={() => setIsResourceModalOpen(true)}
+                        className="flex items-center gap-2 px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors"
+                    >
+                        <FilePlus size={18} />
+                        <span>Add Resource</span>
+                    </button>
                 </div>
 
                 {/* User Table */}
@@ -201,7 +217,12 @@ const AdminDashboard = ({ onViewChange }) => {
                 </div>
 
             </div>
-        </div>
+            
+            <AddResourceModal 
+                isOpen={isResourceModalOpen} 
+                onClose={() => setIsResourceModalOpen(false)} 
+            />
+        </div >
     )
 }
 

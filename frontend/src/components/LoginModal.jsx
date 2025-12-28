@@ -25,16 +25,14 @@ const LoginModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null
 
     const handleSocialLogin = (provider) => {
-        // SIMULATION: In a real app, this would redirect to OAuth
-        setError('')
-        const mockUser = {
-            id: "social-" + Math.random().toString(36).substr(2, 9),
-            email: `${provider.toLowerCase()}@example.com`,
-            provider: provider,
-            avatar: provider === 'Google' ? 'https://www.google.com/favicon.ico' : null
-        }
-        setTempAuth(mockUser)
-        setStep('onboarding')
+        // Real implementation would involve OAuth redirects here
+        // e.g. window.location.href = `${API_URL}/auth/${provider.toLowerCase()}`
+
+        // For MVP, show unavailable
+        // toast.error(`${provider} login is coming soon!`)
+        // note: we need to import toast first or just console.log for now if not imported
+        console.log(`${provider} login clicked`)
+        alert(`${provider} login is currently disabled in this version. Please use Email/Password.`)
     }
 
     const handleEmailLogin = async (e) => {
