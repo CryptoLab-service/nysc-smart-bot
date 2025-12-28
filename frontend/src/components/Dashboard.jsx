@@ -4,6 +4,8 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import SettingsModal from './SettingsModal'
+import ClearanceRequestModal from './ClearanceRequestModal'
+import OfficialClearanceDashboard from './OfficialClearanceDashboard'
 
 const Dashboard = ({ user, onViewChange }) => {
     const [greeting, setGreeting] = useState('')
@@ -11,6 +13,7 @@ const Dashboard = ({ user, onViewChange }) => {
     const [timeline, setTimeline] = useState(null)
     const [loading, setLoading] = useState(true)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const [isClearanceOpen, setIsClearanceOpen] = useState(false)
     const [selectedNews, setSelectedNews] = useState(null) // For News Modal
     const { logout } = useAuth()
 
@@ -236,18 +239,18 @@ const Dashboard = ({ user, onViewChange }) => {
                                     </div>
                                 </button>
 
-                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
+                                <button onClick={() => setIsClearanceOpen(true)} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between hover:shadow-xl hover:scale-[1.02] transition-all w-full text-left cursor-pointer group">
                                     <div>
                                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Clearance</h3>
                                         <span className="px-3 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-lg text-xs font-bold uppercase tracking-wider">
-                                            Pending
+                                            Status
                                         </span>
-                                        <p className="text-xs text-gray-400 mt-2">Due Date: Jan 5th</p>
+                                        <p className="text-xs text-gray-400 mt-2">Tap to view history</p>
                                     </div>
-                                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl text-green-600 dark:text-green-400">
+                                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-2xl text-green-600 dark:text-green-400 group-hover:scale-110 transition-transform">
                                         <CheckCircle size={28} />
                                     </div>
-                                </div>
+                                </button>
                             </>
                         )}
 
@@ -289,15 +292,15 @@ const Dashboard = ({ user, onViewChange }) => {
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Monitor Zonal Activities.</p>
                                 </div>
 
-                                <div className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer">
+                                <button onClick={() => setIsClearanceOpen(true)} className="bg-white dark:bg-[#1e1f20] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer text-left w-full group">
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600 dark:text-blue-400">
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                                             <CheckCircle size={24} />
                                         </div>
                                     </div>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">Clearance Mgmt</h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Approve Monthly Clearance.</p>
-                                </div>
+                                </button>
                             </>
                         )}
                     </div>
@@ -310,6 +313,7 @@ const Dashboard = ({ user, onViewChange }) => {
                         <a href="https://nysc.gov.ng/news-and-events" target="_blank" rel="noopener noreferrer" className="text-sm text-green-600 font-medium hover:underline">View All</a>
                     </div>
 
+                    {/* ... News Content ... */}
                     <div className="bg-white dark:bg-[#1e1f20] rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden">
                         {news.length > 0 ? news.map(newsItem => (
                             <div
@@ -338,12 +342,25 @@ const Dashboard = ({ user, onViewChange }) => {
 
             </div>
 
-            {/* Settings Modal */}
+            {/* Modals */}
             <SettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 user={user}
             />
+
+            {/* Clearance Modal (Conditional based on Role) */}
+            {user?.role === 'Corps Member' ? (
+                <ClearanceRequestModal
+                    isOpen={isClearanceOpen}
+                    onClose={() => setIsClearanceOpen(false)}
+                />
+            ) : user?.role === 'Official' ? (
+                <OfficialClearanceDashboard
+                    isOpen={isClearanceOpen}
+                    onClose={() => setIsClearanceOpen(false)}
+                />
+            ) : null}
 
             {/* News Modal */}
             {selectedNews && (
