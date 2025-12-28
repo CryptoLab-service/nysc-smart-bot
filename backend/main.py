@@ -11,7 +11,6 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_core.messages import SystemMessage, HumanMessage
 from tavily import TavilyClient
 from apscheduler.schedulers.background import BackgroundScheduler
 from services.news_service import fetch_and_store_news
@@ -252,7 +251,6 @@ async def telegram_webhook(request: Request):
 def home():
     return {"message": "NYSC AI is Live (Fine-Tuned)!"}
 
-@app.on_event("startup")
 @app.on_event("startup")
 async def startup_event():
     seed_users()
