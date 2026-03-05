@@ -19,37 +19,6 @@
 
 A robust, scalable architecture powered by modern tech stacks to ensure 99.9% uptime and real-time responsiveness.
 
-```mermaid
-graph TD
-    User([User Device]) -->|HTTPS| Frontend["⚛️ React Frontend (Vite + PWA)"]
-    
-    subgraph "Frontend Layer"
-        Frontend -->|State| Context["Auth & Data Context"]
-        Frontend -->|UI| Components["Glassmorphism UI Components"]
-    end
-    
-    Frontend <-->|REST API| LoadBalancer["🌐 Load Balancer / Proxy"]
-    LoadBalancer <-->|JSON| Backend["🐍 FastAPI Backend Server"]
-    
-    subgraph "Backend Core"
-        Backend -->|Auth| Security["JWT Authentication & RBAC"]
-        Backend -->|Logic| Routers["Service Routers (Admin, Clearance, News)"]
-        Backend -->|Tasks| Scheduler["⏱️ APScheduler (Background Jobs)"]
-    end
-    
-    subgraph "Data Persistence"
-        Backend <-->|ORM| DB[("🐘 PostgreSQL / SQLite")]
-        Backend <-->|Files| Cloud["☁️ Cloudinary Storage"]
-    end
-    
-    subgraph "AI Intelligence Engine"
-        Backend <-->|Query| LangChain["🦜🔗 LangChain Agent"]
-        LangChain <-->|Retrieval| VectorDB["📚 ChromaDB (Internal Knowledge)"]
-        LangChain <-->|Inference| LLM["🤖 OpenAI / Gemini Pro"]
-        LangChain <-->|Search| WebSearch["🕷️ Tavily Search API (Real-Time News)"]
-    end
-```
-
 ---
 
 ## ✨ Features That Wow
