@@ -78,23 +78,53 @@ function App() {
     setQuestion('')
     setIsLoading(true)
 
-    try {
-      // Attempt API Call
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/ask`, {
-        question: input
-      }, { timeout: 45000 }) // 45s timeout
+    // Add empty bot message to append chunks to
+    setMessages(prev => [...prev, { type: 'bot', text: '' }])
 
-      setMessages(prev => [...prev, { type: 'bot', text: response.data.answer }])
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: input,
+          session_id: user?.email || 'default_session_id'
+        }),
+      });
+
+      if (!response.ok) {
+        const isRateLimited = response.status === 429;
+        throw new Error(isRateLimited ? "Rate limit exceeded" : `HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+
+        // Append chunk to the last message (which is the bot message)
+        setMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1].text += chunk;
+          return newMessages;
+        });
+      }
     } catch (error) {
       console.warn("Chat API Error", error)
-      const errorMessage = error.response?.status === 503
-        ? "I am currently undergoing maintenance. Please check back shortly."
+      const errorMessage = error.message.includes("Rate limit")
+        ? "You are sending too many requests. Please slow down."
         : "I'm having trouble connecting to the server. Please check your internet connection."
 
-      setMessages(prev => [...prev, {
-        type: 'bot',
-        text: errorMessage
-      }])
+      setMessages(prev => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1].text = errorMessage;
+        return newMessages;
+      })
     } finally {
       setIsLoading(false)
     }

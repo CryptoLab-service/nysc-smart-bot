@@ -4,7 +4,6 @@
 # Ignore Python Garbage
 backend/venv/
 backend/__pycache__/
-backend/chroma_db/
 
 # Ignore Node Modules (Heavy)
 frontend/node_modules/

@@ -19,37 +19,6 @@
 
 A robust, scalable architecture powered by modern tech stacks to ensure 99.9% uptime and real-time responsiveness.
 
-```mermaid
-graph TD
-    User([User Device]) -->|HTTPS| Frontend["⚛️ React Frontend (Vite + PWA)"]
-    
-    subgraph "Frontend Layer"
-        Frontend -->|State| Context["Auth & Data Context"]
-        Frontend -->|UI| Components["Glassmorphism UI Components"]
-    end
-    
-    Frontend <-->|REST API| LoadBalancer["🌐 Load Balancer / Proxy"]
-    LoadBalancer <-->|JSON| Backend["🐍 FastAPI Backend Server"]
-    
-    subgraph "Backend Core"
-        Backend -->|Auth| Security["JWT Authentication & RBAC"]
-        Backend -->|Logic| Routers["Service Routers (Admin, Clearance, News)"]
-        Backend -->|Tasks| Scheduler["⏱️ APScheduler (Background Jobs)"]
-    end
-    
-    subgraph "Data Persistence"
-        Backend <-->|ORM| DB[("🐘 PostgreSQL / SQLite")]
-        Backend <-->|Files| Cloud["☁️ Cloudinary Storage"]
-    end
-    
-    subgraph "AI Intelligence Engine"
-        Backend <-->|Query| LangChain["🦜🔗 LangChain Agent"]
-        LangChain <-->|Retrieval| VectorDB["📚 ChromaDB (Internal Knowledge)"]
-        LangChain <-->|Inference| LLM["🤖 OpenAI / Gemini Pro"]
-        LangChain <-->|Search| WebSearch["🕷️ Tavily Search API (Real-Time News)"]
-    end
-```
-
 ---
 
 ## ✨ Features That Wow
@@ -69,7 +38,6 @@ graph TD
 - **Real-Time Notifications**: Smart toast notifications alert you instantly when new news drops.
 
 ### 🛠️ **Power Tools**
-- **ID Card Generator**: Instantly generate a preview of your NYSC ID card.
 - **Biometric Upload**: Seamlessly upload and track your biometric verification slips.
 - **Resource Library**: One-click access to official PDF guides and forms.
 
@@ -79,12 +47,12 @@ graph TD
 
 Building the future of NYSC digital services takes caffeine and code! If you find this project helpful, consider supporting the development.
 
-<a href="https://www.buymeacoffee.com/yourusername" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
 ## 📞 Contact
 For inquiries, bug reports, or feature requests:
-- **Email**: hello@CryptoLab-service.com
-- **Twitter**: [@CryptoLab](https://twitter.com)
+- **Email**: oluwalowojohn@gmail.com, zoetechhub@zohomail.com
+- **Twitter**: [@encryptedMFI](https://twitter.com/encryptedMFI)
+- **Github**: [@CryptoLab-service](https://github.com/CryptoLab-service)
+- **Linkedin**: [@oluwalowojohn](https://linkedin.com/in/oluwalowojohn)
 
 ---
 
