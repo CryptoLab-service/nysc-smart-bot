@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from database import Base
 
 class User(Base):
@@ -37,7 +37,7 @@ class Clearance(Base):
     __tablename__ = "clearances"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, index=True) # ForeignKey relation manual for simplicity or add ForeignKey
+    user_id = Column(Integer, ForeignKey("users.id"), index=True) 
     user_name = Column(String) # Denormalized for easy display
     state_code = Column(String)
     month = Column(String) # e.g. "January 2026"

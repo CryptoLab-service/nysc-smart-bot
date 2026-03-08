@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 from database import get_db
 from models import User
 from auth import get_password_hash, verify_password, create_access_token, get_current_user
@@ -8,8 +8,8 @@ from auth import get_password_hash, verify_password, create_access_token, get_cu
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 class UserCreate(BaseModel):
-    email: str
-    password: str
+    email: EmailStr
+    password: str = Field(..., min_length=6, description="Password must be at least 6 characters")
     name: str
     role: str = "Corps Member"
     state: str = None

@@ -29,9 +29,15 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS
+ALLOWED_ORIGINS = [
+    "http://localhost:5174", # Local dev frontend
+    "https://nysc-smart-bot.vercel.app", # Vercel URL
+    os.getenv("FRONTEND_URL", "http://localhost:5174")
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
